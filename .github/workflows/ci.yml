@@ -1,0 +1,38 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    name: node ${{ matrix.node }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+
+      # 组合包入口契约：桩 ctx 冒烟（不需要 DSH、不需要装依赖）
+      - name: Entry smoke test
+        run: node test/entry.smoke.mjs
+
+      # 校验器自身的回归自测：含反向夹具与分层负例
+      - name: Validator selftest
+        run: node skills/dsh-coach/scripts/coach-selftest.mjs
+
+      # 正向夹具：真实领域包下的完整校验
+      - name: Validate demo state
+        run: node skills/dsh-coach/scripts/coach-validate.mjs --state examples/state.demo.json
+
+      # 渲染视图，确认生成路径可用
+      - name: Render progress view
+        run: node skills/dsh-coach/scripts/coach-validate.mjs --state examples/state.demo.json --render --out "${{ runner.temp }}/PROGRESS.md"

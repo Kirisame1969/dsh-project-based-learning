@@ -1,0 +1,39 @@
+# 运行产物与本地状态（绝不提交）
+.coach/
+PROGRESS.md
+**/PROGRESS.md
+
+# 校验器 / 自测 / 安装器的临时产物
+.selftest-tmp/
+.tmp-*/
+.review-tmp/
+_tmp/
+*.tmp
+
+# 本地技能安装位置（各人机器上的拷贝或 junction）
+.dsh/
+.agents/
+
+# Node
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
+package-lock.json
+pnpm-lock.yaml
+
+# 本地 npm/pnpm 缓存（例如把缓存重定向进工作区时）
+.npm-cache/
+.pnpm-store/
+*.tgz
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 环境与机密
+.env
+.env.*
+*.local
+.credentials*

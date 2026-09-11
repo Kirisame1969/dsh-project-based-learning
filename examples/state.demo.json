@@ -1,0 +1,185 @@
+{
+  "schemaVersion": "1.0",
+  "engineVersion": "1.0.0",
+  "domain": "unity-csharp",
+  "domainVersion": "1.0.0",
+  "assumeGoal": true,
+  "revision": 7,
+  "updatedAt": "2026-03-08T20:15:00.000Z",
+  "goal": {
+    "statement": "独立做出一个可玩、可演示的 2D 平台跳跃小样，并说清每一处实现的机制与取舍",
+    "deliverable": "一个可运行的小样：3 个关卡片段、角色移动与跳跃、敌人碰撞伤害、简单 HUD（血量与计时）",
+    "why": "用于申请校内游戏开发社团的作品展示，并作为后续 3D 项目的基础训练",
+    "doneCriteria": [
+      "能在 Unity 编辑器中连续游玩 3 分钟无报错、无卡死",
+      "能脱离教程从零重建角色控制器并解释每个参数的作用",
+      "能自行定位并修复至少一类运行时错误"
+    ],
+    "constraints": {
+      "time": "每天约 45 分钟，周末可到 90 分钟",
+      "tools": "Unity 6 LTS、VS Code、Git（本地仓库）",
+      "environment": "Windows 笔记本，无独立显卡，帧率以 60 为上限",
+      "permissions": "教练只读访问 workspaces/2d-platformer/，运行测试需逐次确认"
+    },
+    "nonGoals": [
+      "联机功能",
+      "美术资源自制（使用免费素材）",
+      "发布到应用商店"
+    ]
+  },
+  "capability": [
+    { "dimension": "基础知识", "level": 3, "status": "部分验证", "evidence": ["E1"], "gap": "对协程与 Update 的取舍仍不稳定", "impact": "会影响后续状态机与技能系统的设计" },
+    { "dimension": "实际应用", "level": 3, "status": "已验证", "evidence": ["E2"], "gap": "尚未独立接过完整功能模块", "impact": "阶段 2 可直接进入功能实现" },
+    { "dimension": "问题拆解", "level": 2, "status": "部分验证", "evidence": ["E3"], "gap": "拆解依赖提示，缺少自主分层习惯", "impact": "复杂需求需要先示范一次拆解" },
+    { "dimension": "调试与纠错", "level": 2, "status": "部分验证", "evidence": ["E4"], "gap": "只看第一条报错，缺少日志定位方法", "impact": "任务 3 中已安排故障诊断训练" },
+    { "dimension": "结构与质量", "level": 2, "status": "待验证", "evidence": [], "gap": "尚无独立设计的组件边界样本", "impact": "阶段 2 需引入组件拆分练习" },
+    { "dimension": "独立程度", "level": 2, "status": "部分验证", "evidence": ["E2"], "gap": "遇到新 API 时倾向先要答案", "impact": "提示级别需从 3 级起，逐步降到 1 级" },
+    { "dimension": "解释与迁移", "level": 1, "status": "待验证", "evidence": [], "gap": "复述不完整（见 retrievalRecap）", "impact": "阶段 2 验收将加强检索式复述" }
+  ],
+  "strategy": {
+    "deferred": ["对象池与性能优化", "编辑器扩展", "网络同步"],
+    "immediate": ["Transform 与物理更新的分工", "用 Debug.Log 与断点定位问题"],
+    "practice": ["每完成一个功能，用 3 句话说明输入—处理—输出的数据流"],
+    "assumptions": [
+      "假设能在无提示下写出接地检测（阶段 2 任务 1 验证）",
+      "假设已掌握基本的 Git 提交习惯（下次提交时验证）"
+    ]
+  },
+  "route": [
+    {
+      "n": 1,
+      "name": "最小可玩闭环：移动 + 跳跃 + 落地",
+      "deliverable": "可在编辑器中操作的角色，能左右移动、接地起跳、稳定落地",
+      "nonGoals": ["美术表现", "音效", "多关卡"],
+      "skills": ["实际应用", "调试与纠错", "独立程度"],
+      "prereq": ["Rigidbody2D 与碰撞体的基本概念"],
+      "tasks": ["读取输入并驱动刚体", "跳跃条件与重力参数", "接地检测与调试"],
+      "userOnly": [
+        "亲手写出角色控制脚本的输入读取与跳跃判定（不得整段复制现成实现）",
+        "亲手在编辑器中挂载组件、设置参数并运行验证"
+      ],
+      "acceptance": [
+        "角色可左右移动，速度参数在 Inspector 中可调",
+        "仅在接地状态下按跳跃键才起跳，空中不可二段跳",
+        "连续跳跃 20 次无穿模、无抖动、Console 无报错"
+      ],
+      "risks": ["把物理更新写进 Update 导致抖动", "接地检测用碰撞体中心点判断而漏检"],
+      "estimate": "3 次任务，每次约 45 分钟",
+      "next": "阶段 2：敌人与伤害循环"
+    },
+    {
+      "n": 2,
+      "name": "敌人与伤害循环",
+      "deliverable": "会巡逻的敌人、接触扣血、血量 HUD 与重生点",
+      "nonGoals": ["敌人 AI 寻路", "多类型敌人"],
+      "skills": ["问题拆解", "结构与质量", "解释与迁移"],
+      "prereq": ["事件与组件的通信方式", "UI 与游戏逻辑的解耦"],
+      "tasks": ["敌人巡逻与朝向", "碰撞伤害与无敌帧", "血量 HUD 与重生"],
+      "userOnly": [
+        "亲手设计伤害事件的通信方式并说明取舍",
+        "亲手写出重生逻辑与血量显示"
+      ],
+      "acceptance": [
+        "角色接触敌人后扣血且有无敌帧，数值可配",
+        "血量归零后在重生点复活，状态完全重置",
+        "能解释为什么伤害用事件而不是直接在碰撞回调里改 UI"
+      ],
+      "risks": ["事件订阅未取消导致重复扣血", "重生时未重置速度导致穿墙"],
+      "estimate": "4 次任务，每次约 45 分钟",
+      "next": "阶段 3：关卡与演示打磨"
+    }
+  ],
+  "current": {
+    "stage": 1,
+    "stageStatus": "已通过",
+    "task": {
+      "title": "任务 3：接地检测与调试",
+      "deliverable": "稳定的接地检测，附带一次真实故障的定位记录",
+      "criteria": [
+        "接地判定在斜坡与边缘处不误判",
+        "提交一份包含报错日志与修复前后对照的定位记录"
+      ],
+      "limits": ["不引入额外插件", "不使用现成的角色控制器包"],
+      "nonGoals": ["Coyote Time 等手感优化"],
+      "estimateMin": 50,
+      "state": "已通过"
+    }
+  },
+  "evidence": [
+    {
+      "id": "E1",
+      "stage": 1,
+      "claim": "能说明物理更新与帧更新的分工，并预测在 Update 中直接改 Transform 的后果",
+      "artifact": "notes/diagnosis-01.md 第 2 题作答 + 用户手绘的时序草图",
+      "strength": "部分验证",
+      "note": "机制解释正确，但对 LateUpdate 的用途表述不完整"
+    },
+    {
+      "id": "E2",
+      "stage": 1,
+      "claim": "独立完成角色左右移动与接地跳跃，参数可在 Inspector 调整",
+      "artifact": "workspaces/2d-platformer/Assets/Scripts/PlayerController.cs（1–88 行）+ 运行录屏 2026-03-06",
+      "strength": "已验证",
+      "note": "由用户亲手编写；教练只做了只读核对与提问"
+    },
+    {
+      "id": "E3",
+      "stage": 1,
+      "claim": "能把“角色不响应输入”拆成输入层、状态层、物理层三段排查",
+      "artifact": "notes/task-03-拆解.md（用户手写，含三段排查顺序）",
+      "strength": "部分验证",
+      "note": "拆解由教练示范一次后完成，自主性待验证"
+    },
+    {
+      "id": "E4",
+      "stage": 1,
+      "claim": "定位并修复一次空引用报错，能说明触发条件",
+      "artifact": "logs/console-2026-03-07.txt 第 14 行报错 + 修复前后代码对照",
+      "strength": "部分验证",
+      "note": "修复正确，但仍依赖第一条报错，未使用断点或日志分级定位"
+    }
+  ],
+  "open": [
+    {
+      "id": "O1",
+      "issue": "跳跃高度在不同帧率下不一致（疑似物理更新与帧更新混用）",
+      "severity": "重要",
+      "status": "未解决",
+      "next": "阶段 2 任务 1 中安排一次帧率相关排查，并要求用户自行给出验证方法"
+    },
+    {
+      "id": "O2",
+      "issue": "脚本存在未使用变量警告",
+      "severity": "建议",
+      "status": "已解决",
+      "next": "已在任务 3 中清理"
+    }
+  ],
+  "routeChanges": [
+    {
+      "at": "2026-03-02T19:40:00.000Z",
+      "reason": "诊断显示已掌握变量、条件、循环与函数基础，原定“C# 语法基础”阶段不必要",
+      "change": "取消原阶段 1（语法基础），直接进入最小可玩闭环；路线由 4 阶段压缩为 3 阶段"
+    }
+  ],
+  "directAnswers": [
+    {
+      "at": "2026-03-04T20:05:00.000Z",
+      "topic": "协程与 Update 的取舍（用户请求直接给答案）"
+    }
+  ],
+  "authorizations": [
+    {
+      "scope": "workspaces/2d-platformer/（只读）",
+      "mode": "read",
+      "grantedAt": "2026-03-03T19:10:00.000Z"
+    }
+  ],
+  "completedTasks": [
+    "阶段 1 任务 1：读取输入并驱动刚体（2026-03-04，证据 E2）",
+    "阶段 1 任务 2：跳跃条件与重力参数（2026-03-05，证据 E2）",
+    "阶段 1 任务 3：接地检测与调试（2026-03-07，证据 E4）"
+  ],
+  "retrievalRecap": "用户在不看资料的情况下复述了 Awake→OnEnable→Start→FixedUpdate→Update→LateUpdate 的执行顺序、为什么物理应放在 FixedUpdate，以及“在 Update 中直接改 Transform 造成抖动”这一失败模式；对 LateUpdate 与相机跟随的关系表述不完整，已记为待验证。",
+  "nextTask": "阶段 2 任务 1：敌人巡逻与朝向（先由用户给出巡逻实现思路与验证方法）"
+}

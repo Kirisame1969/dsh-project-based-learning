@@ -1,0 +1,14 @@
+id: unity-csharp
+name: Unity / C# 开发
+version: 1.0.0
+engine: ">=1.0.0"
+locale: zh-CN
+sections:
+  archetypes: archetypes.md
+  diagnosis: diagnosis-bank.md
+  verification: verification.md
+  pitfalls: pitfalls.md
+  example: example.md
+  glossary: glossary.md
+taskMinutes: [30, 90]
+notes: 适用于能打开 Unity 工程、手写 C# 脚本的初学到中级学员；覆盖 MonoBehaviour 脚本、编辑器工具与小型联网玩法，不适用于纯 DOTS/ECS、Shader 图形学、原生插件与大规模商业项目架构评审。

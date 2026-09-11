@@ -1,0 +1,14 @@
+# dsh-coach 组合包层：把随包分发的教练技能注册为一个 DSH 运行时技能。
+#
+# 本文件是 `package.json#dsh.bundle.patch` 指向的层。层语义：一个 YAML 数组的
+# 行动词（row verbs）；`insert` 向组合后的配置加入插件行，后续层可按 `id`
+# 整行替换该行（config 整体替换）。
+#
+# `name` 是加载器要 import 的模块名：解析到本包的入口（package.json#main → index.js），
+# 由它调用 `ctx.skills.register()` 注册技能。
+#
+# 前提：目标 profile 已挂载 `@deepseek-ai/dsh-skill`（`@deepseek-ai/dsh-base` 已包含）。
+# 本包不贡献任何工具，也不改动既有行。
+- insert:
+    - id: dsh-coach
+      name: dsh-coach

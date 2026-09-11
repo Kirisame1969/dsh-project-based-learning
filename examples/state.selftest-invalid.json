@@ -1,0 +1,58 @@
+{
+  "_comment": "反向自测夹具：本文件故意违反多项不变量，用于验证 coach-validate.mjs 能拦住问题。不要把它当作可用状态。预期 error 覆盖：ST02(缺 4 个维度)、ST03(已验证无证据／证据强度不足／等级不足)、ST04(无证据却给高等级与部分验证)、ST05(引用不存在的证据 id)、ST06(证据无材料／材料是占位符／id 重复)、ST07(userOnly 与验收标准为空)、ST09(有阻塞项却判已通过)、ST10(已通过但无复述)、ST11(目标未落盘)、ST12(revision 与时间非法)、ST-TYPE(枚举与类型非法)。",
+  "schemaVersion": "1.0",
+  "engineVersion": "1.0.0",
+  "domain": "unity-csharp",
+  "domainVersion": "1.0.0",
+  "assumeGoal": true,
+  "revision": 0,
+  "updatedAt": "not-a-date",
+  "goal": {
+    "statement": "",
+    "deliverable": "",
+    "why": "",
+    "doneCriteria": [],
+    "constraints": { "time": "", "tools": "", "environment": "", "permissions": "" },
+    "nonGoals": []
+  },
+  "capability": [
+    { "dimension": "基础知识", "level": 5, "status": "已验证", "evidence": [], "gap": "", "impact": "" },
+    { "dimension": "实际应用", "level": 2, "status": "部分验证", "evidence": ["E9"], "gap": "", "impact": "" },
+    { "dimension": "问题拆解", "level": 4, "status": "已验证", "evidence": ["E1"], "gap": "", "impact": "" }
+  ],
+  "strategy": { "deferred": [], "immediate": [], "practice": [], "assumptions": [] },
+  "route": [
+    {
+      "n": 1,
+      "name": "阶段一",
+      "deliverable": "某个成果",
+      "nonGoals": [],
+      "skills": [],
+      "prereq": [],
+      "tasks": [],
+      "userOnly": [],
+      "acceptance": [],
+      "risks": [],
+      "estimate": "",
+      "next": ""
+    }
+  ],
+  "current": {
+    "stage": 1,
+    "stageStatus": "已通过",
+    "task": { "title": "", "deliverable": "", "criteria": [], "limits": [], "nonGoals": [], "estimateMin": 0, "state": "已通过" }
+  },
+  "evidence": [
+    { "id": "E1", "stage": 1, "claim": "声称完成了某个功能", "artifact": "-", "strength": "待验证", "note": "" },
+    { "id": "E1", "stage": 1, "claim": "重复 id，且强度枚举非法", "artifact": "notes/x.md", "strength": "随便写", "note": "" }
+  ],
+  "open": [
+    { "id": "O1", "issue": "阻塞性问题未解决", "severity": "阻塞", "status": "未解决", "next": "" }
+  ],
+  "routeChanges": [],
+  "directAnswers": [],
+  "authorizations": [],
+  "completedTasks": [],
+  "retrievalRecap": "",
+  "nextTask": ""
+}

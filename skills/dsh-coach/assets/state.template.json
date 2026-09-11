@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.0",
+  "engineVersion": "1.0.0",
+  "domain": "unity-csharp",
+  "domainVersion": "1.0.0",
+  "assumeGoal": true,
+  "revision": 1,
+  "updatedAt": "1970-01-01T00:00:00.000Z",
+  "goal": {
+    "statement": "",
+    "deliverable": "",
+    "why": "",
+    "doneCriteria": [],
+    "constraints": {
+      "time": "",
+      "tools": "",
+      "environment": "",
+      "permissions": ""
+    },
+    "nonGoals": []
+  },
+  "capability": [
+    { "dimension": "基础知识", "level": 1, "status": "待验证", "evidence": [], "gap": "", "impact": "" },
+    { "dimension": "实际应用", "level": 1, "status": "待验证", "evidence": [], "gap": "", "impact": "" },
+    { "dimension": "问题拆解", "level": 1, "status": "待验证", "evidence": [], "gap": "", "impact": "" },
+    { "dimension": "调试与纠错", "level": 1, "status": "待验证", "evidence": [], "gap": "", "impact": "" },
+    { "dimension": "结构与质量", "level": 1, "status": "待验证", "evidence": [], "gap": "", "impact": "" },
+    { "dimension": "独立程度", "level": 1, "status": "待验证", "evidence": [], "gap": "", "impact": "" },
+    { "dimension": "解释与迁移", "level": 1, "status": "待验证", "evidence": [], "gap": "", "impact": "" }
+  ],
+  "strategy": {
+    "deferred": [],
+    "immediate": [],
+    "practice": [],
+    "assumptions": []
+  },
+  "route": [],
+  "current": {
+    "stage": 1,
+    "stageStatus": "未开始",
+    "task": {
+      "title": "",
+      "deliverable": "",
+      "criteria": [],
+      "limits": [],
+      "nonGoals": [],
+      "estimateMin": 45,
+      "state": "未开始"
+    }
+  },
+  "evidence": [],
+  "open": [],
+  "routeChanges": [],
+  "directAnswers": [],
+  "authorizations": [],
+  "completedTasks": [],
+  "retrievalRecap": "",
+  "nextTask": ""
+}

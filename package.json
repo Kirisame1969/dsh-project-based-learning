@@ -1,0 +1,74 @@
+{
+  "name": "dsh-coach",
+  "version": "1.0.0",
+  "description": "项目制学习教练：学科无关的教学引擎 + 可替换领域包（随包提供 Unity/C# 特化）。以 DSH 技能与组合包双形态分发。",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "coach-validate": "./skills/dsh-coach/scripts/coach-validate.mjs",
+    "coach-selftest": "./skills/dsh-coach/scripts/coach-selftest.mjs",
+    "coach-install": "./skills/dsh-coach/scripts/coach-install.mjs"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "skills",
+    "docs",
+    "examples",
+    "LICENSE",
+    "README.md",
+    "README.zh.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md"
+  ],
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "dsh-plugin",
+    "cordis",
+    "agent-skill",
+    "skill",
+    "project-based-learning",
+    "ai-tutor",
+    "teaching",
+    "unity",
+    "csharp"
+  ],
+  "license": "MIT",
+  "author": "Kirisame1969",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kirisame1969/dsh-project-based-learning.git"
+  },
+  "homepage": "https://github.com/Kirisame1969/dsh-project-based-learning#readme",
+  "bugs": {
+    "url": "https://github.com/Kirisame1969/dsh-project-based-learning/issues"
+  },
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  },
+  "packageManager": "pnpm@11.7.0",
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.2",
+    "@deepseek-ai/dsh": ">=0.1.2-rc.1 <0.3.0"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh": {
+      "optional": true
+    }
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "scripts": {
+    "validate": "node skills/dsh-coach/scripts/coach-validate.mjs --state examples/state.demo.json",
+    "selftest": "node skills/dsh-coach/scripts/coach-selftest.mjs"
+  }
+}
