@@ -23,9 +23,10 @@ dsh-plugin-dev check                                        # 社区静态检查
 **可用通道：HTTPS + gh token**。`git push` 的 dry-run 已到达 GitHub 并完成鉴权（仅因当时尚无共同历史而被拒 non-fast-forward）：
 
 ```powershell
+# 在仓库根目录执行（下称 <仓库根>）
 $t = gh auth token
 $b64 = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("x-access-token:$t"))
-git -C coach -c http.extraheader="AUTHORIZATION: basic $b64" `
+git -C "<仓库根>" -c http.extraheader="AUTHORIZATION: basic $b64" `
     push https://github.com/Kirisame1969/dsh-project-based-learning.git main
 ```
 
@@ -49,7 +50,7 @@ dsh plugin --profile web add dsh-project-based-learning
 
 ## 3. 提交到社区列表（"被搜到"的关键）
 
-**已确认的提交形态**：向 [awesome-dsh-plugin/awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) 提 PR，新增一个目录条目文件 `data/plugins/<owner>__<repo>.yml`（本地草稿在 `.publish/awesome-submission/`）。标题遵循仓库既有先例（已合并的 [PR #3405](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/3405)）：
+**已确认的提交形态**：向 [awesome-dsh-plugin/awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) 提 PR，新增一个目录条目文件 `data/plugins/<owner>__<repo>.yml`。标题遵循仓库既有先例（已合并的 [PR #3405](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/3405)）：
 
 ```
 feat(catalog): add dsh-project-based-learning by Kirisame1969
