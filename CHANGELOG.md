@@ -1,11 +1,30 @@
 # Changelog
 
-本文件记录 dsh-coach 的对外变更。版本号含义：
+本文件记录 `dsh-project-based-learning` 的对外变更。版本号含义：
 
 - **插件包版本**（`package.json#version`）：npm 包与组合包层的版本。
 - **引擎版本**（`SKILL.md` 与 `references/engine/` 的教学法逻辑）：`1.0.0` 起，交互协议变化才递增。
 - **状态 schema 版本**（`state.json#schemaVersion`）：`1.0`，字段语义变化才递增。
 - **领域包版本**（`references/domains/<id>/manifest.yml#version`）：各学科独立演进，与引擎版本解耦。
+
+## [2.0.0] - 2026-09-12
+
+**技能名与包名统一，学科机制文档化。** 技能注册名属于包的公开接口，改名会让引用旧名的提示词失效，故按破坏性变更升主版本。
+
+### 变更（破坏性）
+
+- **技能注册名由 `dsh-coach` 改为 `dsh-project-based-learning`**；技能目录由 `skills/dsh-coach/` 改为 `skills/dsh-project-based-learning/`。仓库名、npm 包名、技能名三者自此一致（社区先例：`dsh-ops-skill` 同样以一个同名技能分发）。引用旧技能名的提示词、脚本与文档需同步更新。
+- `cordis.patch.yml` 的插件行 `id` 与加载器模块名同步为包名——该 `name` 必须等于 npm 包名，否则层加载会因模块解析失败而报错。
+
+### 文档
+
+- README 新增「学科与领域包」章节：折叠式列出随包提供的 Unity / C# 包内容（16 题 / 6 原型 / 5 配方 / 7 文件）；给出「让 AI 生成领域包」的可复制提示词；说明切换学科的指令与三条边界（缺小节回退通用行为、校验器不解析题库、领域包须位于技能目录内）。
+- 指令手册补 `切换或替换学科：<id>`。
+- 历史审核记录 `docs/DESIGN-AUDIT.md` 保留 1.0.0 / 1.1.0 时期的旧路径原文，仅在文首加一条改名勘误，不篡改记录。
+
+### 说明
+
+- **引擎版本保持 `1.1.0`**：本次不涉及教学法逻辑，只涉及技能标识与外层文档；`state.json#schemaVersion` 仍为 `1.0`。
 
 ## [1.1.0] - 2026-09-12
 
@@ -50,7 +69,7 @@
 
 ### 新增
 
-- **教学引擎**（学科无关）：`skills/dsh-coach/SKILL.md` + `references/engine/`（intake、diagnosis、route、task-loop、review-acceptance、adapt、state、permissions、domain-contract）。
+- **教学引擎**（学科无关）：`skills/dsh-project-based-learning/SKILL.md` + `references/engine/`（intake、diagnosis、route、task-loop、review-acceptance、adapt、state、permissions、domain-contract）。
 - **状态契约**：`.coach/state.json` 为唯一事实源，`.coach/PROGRESS.md` 为生成视图；含机械不变量与多项补充检查（1.0.0 时为 13 条；**1.1.0 增至 21 条**，见 `references/engine/state.md`）。
 - **校验器**：`coach-validate.mjs`（状态层 + 领域包结构 + 引擎分层检查，零依赖）。
 - **回归自测**：`coach-selftest.mjs`（含反向夹具与分层负例自动化；不启动子进程，可在受限沙箱内运行）。

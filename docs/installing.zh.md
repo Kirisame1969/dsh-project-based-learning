@@ -1,6 +1,6 @@
 # 安装细则
 
-本文覆盖 dsh-coach 的全部安装路径（技能目录方式与组合包方式）。
+本文覆盖 `dsh-project-based-learning`（注册技能名 `dsh-project-based-learning`）的全部安装路径：技能目录方式与组合包方式。
 
 ## 先选路径
 
@@ -29,14 +29,14 @@
 ### A1 项目级
 
 ```powershell
-# 在本仓库根执行；默认目标是 <cwd>/.dsh/skills/dsh-coach
-node skills/dsh-coach/scripts/coach-install.mjs
+# 在本仓库根执行；默认目标是 <cwd>/.dsh/skills/dsh-project-based-learning
+node skills/dsh-project-based-learning/scripts/coach-install.mjs
 
 # 先看会做什么（不写盘）
-node skills/dsh-coach/scripts/coach-install.mjs --dry-run
+node skills/dsh-project-based-learning/scripts/coach-install.mjs --dry-run
 
 # 用目录联接安装：源文件改动即时生效，适合边改边用
-node skills/dsh-coach/scripts/coach-install.mjs --link
+node skills/dsh-project-based-learning/scripts/coach-install.mjs --link
 ```
 
 `--link` 在 Windows 上建立**目录联接（Junction）**，不需要管理员权限；其它平台建立目录符号链接。**分发时不要用 `--link`**——对方删掉你的源目录，技能就失效了。
@@ -44,7 +44,7 @@ node skills/dsh-coach/scripts/coach-install.mjs --link
 ### A2 用户级（跨工作区）
 
 ```powershell
-node skills/dsh-coach/scripts/coach-install.mjs --dest-root "$env:DSH_HOME\skills"
+node skills/dsh-project-based-learning/scripts/coach-install.mjs --dest-root "$env:DSH_HOME\skills"
 # 原生 DSH 若未设置 DSH_HOME，其默认 home 为 ~/.dsh
 ```
 
@@ -53,13 +53,13 @@ node skills/dsh-coach/scripts/coach-install.mjs --dest-root "$env:DSH_HOME\skill
 任何被扫描的根都可以，只要目录名是技能名：
 
 ```powershell
-node skills/dsh-coach/scripts/coach-install.mjs --dest-root "<项目根>\.agents\skills"
+node skills/dsh-project-based-learning/scripts/coach-install.mjs --dest-root "<项目根>\.agents\skills"
 ```
 
 ## B. 组合包（插件）安装
 
 ```bash
-dsh plugin --profile <profile> add /path/to/dsh-coach                     # 本地检出
+dsh plugin --profile <profile> add /path/to/dsh-project-based-learning                     # 本地检出
 dsh plugin --profile <profile> add dsh-project-based-learning             # 从 npm
 dsh plugin --profile <profile> add github:Kirisame1969/dsh-project-based-learning   # 不经 npm，直接从仓库
 dsh --profile <profile> --dump-config                     # 应出现 dsh-project-based-learning 层
@@ -73,23 +73,23 @@ dsh plugin --profile <profile> remove dsh-project-based-learning          # 卸�
 
 ## C. DSH Desktop
 
-- 桌面端有自己的插件界面（市场插件 `dshmarket`，站点 <https://dshmarket.com>，仓库 [dsh-market/dsh-market](https://github.com/dsh-market/dsh-market)）。若 dsh-coach 已被收录，可直接在界面里一键安装。
+- 桌面端有自己的插件界面（市场插件 `dshmarket`，站点 <https://dshmarket.com>，仓库 [dsh-market/dsh-market](https://github.com/dsh-market/dsh-market)）。若 dsh-project-based-learning 已被收录，可直接在界面里一键安装。
 - 尚未收录时，用 A1/A2 的技能目录方式即可——桌面端同样扫描这些技能根。
 - 桌面端把插件装在 `$DSH_HOME/profiles/<profile>/` 下的"代际"目录中，并通过 profile 的 `package.json` 依赖与 pnpm override 指向它。
 
 ## D. 不安装
 
-让 agent 直接读本仓库的 `skills/dsh-coach/SKILL.md` 并按它执行。适合评估与调试。
+让 agent 直接读本仓库的 `skills/dsh-project-based-learning/SKILL.md` 并按它执行。适合评估与调试。
 
 ## 怎么确认装好了
 
-1. **会话技能目录**里出现 `dsh-coach`（模型会在下一步看到它）；
-2. 让模型调用一次 `skill("dsh-coach")`，应返回技能正文，并在资源提示里给出技能目录的绝对路径；
-3. 目录检查：`<技能根>/dsh-coach/SKILL.md` 存在，且 `references/domains/unity-csharp/` 下有 7 个文件。
+1. **会话技能目录**里出现 `dsh-project-based-learning`（模型会在下一步看到它）；
+2. 让模型调用一次 `skill("dsh-project-based-learning")`，应返回技能正文，并在资源提示里给出技能目录的绝对路径；
+3. 目录检查：`<技能根>/dsh-project-based-learning/SKILL.md` 存在，且 `references/domains/unity-csharp/` 下有 7 个文件。
 
 ## 卸载
 
-- 纯技能：删除 `<技能根>/dsh-coach` 目录（联接方式则删除联接本身，源目录不受影响）。
+- 纯技能：删除 `<技能根>/dsh-project-based-learning` 目录（联接方式则删除联接本身，源目录不受影响）。
 - 组合包：`dsh plugin --profile <profile> remove dsh-project-based-learning`。
 - 学习数据在**你自己的工作区** `.coach/` 下，与安装无关；卸载技能不会删除它。
 

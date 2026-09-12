@@ -1,4 +1,4 @@
-# dsh-coach 组合包层：把随包分发的教练技能注册为一个 DSH 运行时技能。
+# dsh-project-based-learning 组合包层：把随包分发的教练技能注册为一个 DSH 运行时技能。
 #
 # 本文件是 `package.json#dsh.bundle.patch` 指向的层。层语义：一个 YAML 数组的
 # 行动词（row verbs）；`insert` 向组合后的配置加入插件行，后续层可按 `id`
@@ -11,5 +11,5 @@
 # 前提：目标 profile 已挂载 `@deepseek-ai/dsh-skill`（`@deepseek-ai/dsh-base` 已包含）。
 # 本包不贡献任何工具，也不改动既有行。
 - insert:
-    - id: dsh-coach
+    - id: dsh-project-based-learning
       name: dsh-project-based-learning

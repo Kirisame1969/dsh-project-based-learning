@@ -42,7 +42,7 @@
 5. **Z6／Z7 判据**：跑校验器，看是否有 `ST-W7` 提醒：
 
    ```bash
-   node skills/dsh-coach/scripts/coach-validate.mjs --state .coach/state.json
+   node skills/dsh-project-based-learning/scripts/coach-validate.mjs --state .coach/state.json
    ```
 
    > `ST-W7` 是 **warn，不是门禁**（CI 退出码只看 error）。这是 2.1 修订的明确取舍：漏报的代价是"可能漂移"（有本清单兜底），误报的代价是每次正常教学都被阻塞。

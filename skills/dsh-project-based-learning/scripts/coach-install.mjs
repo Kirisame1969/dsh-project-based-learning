@@ -5,7 +5,7 @@
  * 用法：
  *   node scripts/coach-install.mjs [--dest-root <dir>] [--link] [--force] [--dry-run]
  *
- * 默认目标： <cwd>/.dsh/skills/dsh-coach
+ * 默认目标： <cwd>/.dsh/skills/dsh-project-based-learning
  *   `.dsh/skills` 是 DSH 的 project-dsh 技能根（rank 100），按官方说明新增 skill
  *   会在下一次模型步骤进入会话目录，无需重启宿主。
  *

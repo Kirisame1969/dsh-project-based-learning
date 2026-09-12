@@ -1,5 +1,5 @@
 ---
-name: dsh-coach
+name: dsh-project-based-learning
 description: 项目制学习教练。以真实项目为主线，通过诊断、分级提示、证据审阅与阶段验收，引导学员独立完成成果。仅在用户明确要求教学模式时启用。
 whenToUse: 用户明确要求"教学模式/带我学/教我/辅导我做项目/验收我的成果/复盘学习进度"，或提到学习路线、能力诊断、阶段验收。普通答疑、直接要代码、与学习无关的任务不要启用。
 user-invocable: true

@@ -1,6 +1,6 @@
 {
   "name": "dsh-project-based-learning",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "项目制学习教练：学科无关的教学引擎 + 可替换领域包（随包提供 Unity/C# 特化）。以 DSH 技能与组合包双形态分发。",
   "type": "module",
   "main": "lib/index.js",
@@ -10,9 +10,9 @@
     "./package.json": "./package.json"
   },
   "bin": {
-    "coach-validate": "./skills/dsh-coach/scripts/coach-validate.mjs",
-    "coach-selftest": "./skills/dsh-coach/scripts/coach-selftest.mjs",
-    "coach-install": "./skills/dsh-coach/scripts/coach-install.mjs"
+    "coach-validate": "./skills/dsh-project-based-learning/scripts/coach-validate.mjs",
+    "coach-selftest": "./skills/dsh-project-based-learning/scripts/coach-selftest.mjs",
+    "coach-install": "./skills/dsh-project-based-learning/scripts/coach-install.mjs"
   },
   "files": [
     "lib",
@@ -71,7 +71,7 @@
     }
   },
   "scripts": {
-    "validate": "node skills/dsh-coach/scripts/coach-validate.mjs --state examples/state.demo.json",
-    "selftest": "node skills/dsh-coach/scripts/coach-selftest.mjs"
+    "validate": "node skills/dsh-project-based-learning/scripts/coach-validate.mjs --state examples/state.demo.json",
+    "selftest": "node skills/dsh-project-based-learning/scripts/coach-selftest.mjs"
   }
 }

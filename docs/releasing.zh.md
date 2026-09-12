@@ -8,8 +8,8 @@
 
 ```bash
 node test/entry.smoke.mjs                                   # 入口契约 + 资源齐全 → PASS
-node skills/dsh-coach/scripts/coach-selftest.mjs            # 校验器回归 → 9/9 PASS
-node skills/dsh-coach/scripts/coach-validate.mjs --state examples/state.demo.json
+node skills/dsh-project-based-learning/scripts/coach-selftest.mjs            # 校验器回归 → 9/9 PASS
+node skills/dsh-project-based-learning/scripts/coach-validate.mjs --state examples/state.demo.json
 dsh-plugin-dev check                                        # 社区静态检查 → ok=true（9 通过 / 0 失败 / 2 警告）
 ```
 

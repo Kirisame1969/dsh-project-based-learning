@@ -1,6 +1,6 @@
 # 贡献指南
 
-感谢你考虑为 dsh-coach 做贡献。本项目的核心设计是**教学法引擎与学科内容分离**，因此最有价值的贡献通常是**新增或改进一个领域包**。
+感谢你考虑为 dsh-project-based-learning 做贡献。本项目的核心设计是**教学法引擎与学科内容分离**，因此最有价值的贡献通常是**新增或改进一个领域包**。
 
 ## 环境要求
 
@@ -11,8 +11,8 @@
 
 ```bash
 node test/entry.smoke.mjs                                   # 组合包入口契约 + 技能资源齐全
-node skills/dsh-coach/scripts/coach-selftest.mjs            # 校验器回归自测（含反向夹具与分层负例）
-node skills/dsh-coach/scripts/coach-validate.mjs --state examples/state.demo.json
+node skills/dsh-project-based-learning/scripts/coach-selftest.mjs            # 校验器回归自测（含反向夹具与分层负例）
+node skills/dsh-project-based-learning/scripts/coach-validate.mjs --state examples/state.demo.json
 ```
 
 若你手上有 `dsh-plugin-guide` 提供的工具链，可再跑一次静态检查：
@@ -25,18 +25,18 @@ dsh-plugin-dev check --strict
 
 ### 1. 新增学科领域包（最欢迎）
 
-引擎是学科无关的；学科内容全部住在 `skills/dsh-coach/references/domains/<domain-id>/`。新增一个学科 = 新增一个目录，**不需要改引擎**。
+引擎是学科无关的；学科内容全部住在 `skills/dsh-project-based-learning/references/domains/<domain-id>/`。新增一个学科 = 新增一个目录，**不需要改引擎**。
 
 **步骤**
 
-1. 读契约：`skills/dsh-coach/references/engine/domain-contract.md`。
+1. 读契约：`skills/dsh-project-based-learning/references/engine/domain-contract.md`。
 2. 新建 `references/domains/<domain-id>/`，按契约补齐七个文件：
    `manifest.yml`、`archetypes.md`、`diagnosis-bank.md`、`verification.md`、`pitfalls.md`、`example.md`、`glossary.md`。
 3. `manifest.yml` 必须恰好包含契约规定的 8 个键（不增删），且 `id` 与目录名一致。
 4. 跑校验器确认契约通过：
 
    ```bash
-   node skills/dsh-coach/scripts/coach-validate.mjs --state examples/state.demo.json --domain-dir skills/dsh-coach/references/domains/<domain-id>
+   node skills/dsh-project-based-learning/scripts/coach-validate.mjs --state examples/state.demo.json --domain-dir skills/dsh-project-based-learning/references/domains/<domain-id>
    ```
 
 **内容要求（会被人工审）**
@@ -49,7 +49,7 @@ dsh-plugin-dev check --strict
 
 ### 2. 改引擎
 
-引擎文件是 `skills/dsh-coach/SKILL.md` 与 `references/engine/*.md`。
+引擎文件是 `skills/dsh-project-based-learning/SKILL.md` 与 `references/engine/*.md`。
 
 **红线**：`SKILL.md`、`references/engine/*.md`、`assets/*.md` 中**不得出现学科专有词条**。校验器的 `LY01` 检查会用硬令牌黑名单拦截（NFKC 归一化 + 整词匹配；`scripts/` 不参与扫描，因为校验器自身含词表）。这条红线是"可替换特化"能成立的唯一保证。
 
@@ -57,7 +57,7 @@ dsh-plugin-dev check --strict
 
 ### 3. 改校验器与工具
 
-`skills/dsh-coach/scripts/` 下三个脚本，同样零依赖：
+`skills/dsh-project-based-learning/scripts/` 下三个脚本，同样零依赖：
 
 - 新增不变量时，**必须同时**：在 `references/engine/state.md` 声明该不变量、在 `coach-selftest.mjs` 增加断言、并在反向夹具 `examples/state.selftest-invalid.json` 里覆盖它。
 - 禁止引入子进程与管道（受限沙箱下会失败）；自测必须在进程内调用校验函数。
