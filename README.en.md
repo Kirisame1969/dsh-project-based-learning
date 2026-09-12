@@ -49,6 +49,27 @@ This project constrains AI tutoring into an **executable teaching protocol** tha
 
 ## 🚀 Quick start
 
+### Option 1 — let DSH install it (recommended)
+
+Copy the whole block below and paste it into any DSH session you already have open; DSH installs the plugin and checks each step itself:
+
+```text
+Please install the DSH plugin dsh-project-based-learning (a project-based learning coach: skill + plugin bundle). Steps:
+
+1. Run: dsh plugin --profile web add dsh-project-based-learning
+   (use your own profile name if it is not "web" — the desktop app defaults to web; if this fails, or the installed
+    version is below 2.0.0, use instead:
+    dsh plugin --profile web add github:Kirisame1969/dsh-project-based-learning)
+2. Run: dsh --profile web --dump-config and confirm a dsh-project-based-learning layer appears
+3. Confirm the skill is registered: dsh-project-based-learning should appear in your skill catalog
+4. Report back: the installed version, whether the layer is present, and whether the skill is usable
+
+If anything fails, read the "Install details" section of
+https://github.com/Kirisame1969/dsh-project-based-learning first.
+```
+
+### Option 2 — run one command yourself
+
 ```bash
 dsh plugin --profile web add dsh-project-based-learning
 ```
@@ -61,9 +82,9 @@ Replace `<subject>` with what you want to learn. When the missing piece is factu
 
 The Unity / C# pack shipped in-repo is demonstrated in `skills/dsh-project-based-learning/references/domains/unity-csharp/example.md`.
 
-## 📦 Install
+## 📦 Install details
 
-### Option 1 — plugin bundle (recommended)
+### Bundle: install from npm or from GitHub
 
 ```bash
 dsh plugin --profile web add dsh-project-based-learning     # or --profile headless, or your own profile
@@ -86,7 +107,7 @@ dsh plugin --profile web remove dsh-project-based-learning
 
 Learning data lives in `.coach/` inside your workspace; uninstalling does not delete it.
 
-### Option 2 — skill files only
+### Skill files only (no bundle)
 
 Into any DSH skill root (project-scoped `.dsh/skills/`, or `$DSH_HOME/skills/` for every workspace):
 
@@ -101,7 +122,7 @@ node skills/dsh-project-based-learning/scripts/coach-install.mjs --dry-run
 node skills/dsh-project-based-learning/scripts/coach-install.mjs --dest-root "$DSH_HOME/skills"
 ```
 
-### Option 3 — no install
+### No install at all
 
 Point your agent at `skills/dsh-project-based-learning/SKILL.md` and ask it to follow that file. Engine protocol, domain pack and scripts are plain files.
 

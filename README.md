@@ -49,6 +49,25 @@
 
 ## 🚀 快速开始
 
+### 方式一：让 DSH 自己装（推荐）
+
+复制下面整段，粘给你正在用的任意一个 DSH 会话——它会自己安装并逐项核对：
+
+```text
+请帮我安装 DSH 插件 dsh-project-based-learning（项目制学习教练：技能 + 组合包）。步骤：
+
+1. 执行：dsh plugin --profile web add dsh-project-based-learning
+   （profile 名按你实际使用的改，桌面端默认是 web；若失败或装到的版本低于 2.0.0，改用：
+    dsh plugin --profile web add github:Kirisame1969/dsh-project-based-learning）
+2. 执行：dsh --profile web --dump-config，确认输出里出现 dsh-project-based-learning 层
+3. 确认技能已注册：你的技能目录里应出现 dsh-project-based-learning
+4. 向我报告：装到的版本、该层是否存在、技能是否可用
+
+遇到报错先读 https://github.com/Kirisame1969/dsh-project-based-learning 的 README「安装细节」一节。
+```
+
+### 方式二：自己敲一条命令
+
 ```bash
 dsh plugin --profile web add dsh-project-based-learning
 ```
@@ -61,9 +80,9 @@ dsh plugin --profile web add dsh-project-based-learning
 
 随包提供的 Unity / C# 领域包示范见 `skills/dsh-project-based-learning/references/domains/unity-csharp/example.md`。
 
-## 📦 安装
+## 📦 安装细节
 
-### 方式一：组合包（推荐）
+### 组合包：从 npm 或 GitHub 安装
 
 ```bash
 dsh plugin --profile web add dsh-project-based-learning     # 也可用 --profile headless 或你自己的 profile
@@ -86,7 +105,7 @@ dsh plugin --profile web remove dsh-project-based-learning
 
 学习数据位于工作区的 `.coach/`，卸载技能不会删除它。
 
-### 方式二：只装技能文件
+### 只装技能文件（不装组合包）
 
 装进任意 DSH 技能根（项目级 `.dsh/skills/`，或用户级 `$DSH_HOME/skills/`）：
 
@@ -101,7 +120,7 @@ node skills\dsh-project-based-learning\scripts\coach-install.mjs --dry-run
 node skills\dsh-project-based-learning\scripts\coach-install.mjs --dest-root "$env:DSH_HOME\skills"
 ```
 
-### 方式三：不安装
+### 完全不安装
 
 将 agent 指向 `skills/dsh-project-based-learning/SKILL.md`，令其按该文件执行。引擎协议、领域包与脚本均为普通文件。
 
