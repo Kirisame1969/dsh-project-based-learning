@@ -29,7 +29,7 @@
 | `strategy` | object | `deferred[]`、`immediate[]`、`practice[]`、`assumptions[]` |
 | `route` | array | 阶段：`n`、`name`、`deliverable`、`nonGoals[]`、`skills[]`、`prereq[]`、`tasks[]`、`userOnly[]`、`acceptance[]`、`risks[]`、`estimate`、`next` |
 | `current` | object | `stage`、`stageStatus`、`task{title,deliverable,criteria[],limits[],nonGoals[],estimateMin,state}` |
-| `evidence` | array | `id`、`stage`、`claim`、`artifact`、`strength`、`note` |
+| `evidence` | array | `id`、`stage`（**`0` = 诊断期证据**）、`claim`、`artifact`、`strength`、`note` |
 | `open` | array | `id`、`issue`、`severity`、`status`（未解决/已解决）、`next` |
 | `routeChanges` | array | `at`、`reason`、`change` |
 | `directAnswers` | array | `at`、`topic`。**记录本身不计入能力证据**；该成果只有在用户能解释、修改、验证之后，才可另行作为证据计入（见 `task-loop.md`） |
@@ -42,7 +42,7 @@
 
 - `evidence[].strength`：`已验证 / 部分验证 / 待验证`（三态，与 `capability[].status` 同枚举）；
 - `evidence[].id`：非空且唯一，格式约定 `E<数字>`；
-- `evidence[].artifact`：非空，且**不得是占位符**（`-`、`无`、`N/A`、`待补` 等）；
+- `evidence[].artifact`：非空，且**不得是占位符**（`-`、`无`、`N/A`、`待补` 等）。**下列都算可核对材料**：文件与行号、日志片段、截图位置、可复现步骤、**问答记录（题目编号＋学员原话摘录）**、**操作自述记录（学员原话摘录＋时间）**。后两类是知识类结论与操作自述的**合法材料**，不得因为"不是文件"而拒绝，也不得因此要求学员补交截图或重复实测；
 - 时间字段：严格 ISO 8601（日期 + 时间 + 时区，如 `2026-03-08T20:15:00.000Z`）；
 - `current.task.estimateMin`：正整数分钟估计，超过领域包 `taskMinutes` 上限时给出提醒。
 
@@ -72,7 +72,7 @@
 3. `status=已验证` ⇒ `evidence` 非空、`level≥3`，**且被引用的证据中至少有一条强度为"已验证"**（只查 id 存在会被"引用一条待验证证据"绕过）；
 4. `evidence` 为空 ⇒ `level≤2` 且 `status=待验证`；`status=部分验证` ⇒ 引用证据强度不得全为"待验证"；
 5. `capability[].evidence` 中每个 id 必须存在于 `evidence[]`；
-6. 每条 `evidence` 必须有非空 `artifact`，且**不得是占位符**（`-`／`无`／`N/A`／`待补` 等）；
+6. 每条 `evidence` 必须有非空 `artifact`，且**不得是占位符**（`-`／`无`／`N/A`／`待补` 等）；问答记录与操作自述记录**都算合法材料**（见上文格式细则）；
 7. `route[].userOnly` 与 `route[].acceptance` 非空；`route[].n` **从 1 开始**、连续、唯一；
 8. `route` 非空时 `current.stage` 必须存在于 `route`；`route` 为空时降为提醒（intake/基线阶段属正常），但**任务一旦开工而 `route` 仍为空则报错**；
 9. 存在 `severity=阻塞` 且 `status=未解决` 的 `open` 项时，`current.stageStatus` 不得为 `已通过`；
@@ -83,7 +83,9 @@
 14. `completedTasks` 为字符串数组；条目过长（>200 字符）时提醒"只保存结论摘要"（原文 §十）；
 15. `evidence[].artifact`／`note` 超长（>500 字符）时提醒疑似内联大段内容；
 16. `current.task.estimateMin` 超过领域包 `taskMinutes` 上限时提醒"必须拆分或由用户显式调整节奏"；
-17. `goal.constraints` 四项为空时提醒缺少边界依据。
+17. `goal.constraints` 四项为空时提醒缺少边界依据；
+18. `evidence[].stage` 为 ≥0 的整数（`0` 表示**诊断期证据**：诊断、基线、路线阶段的问答记录与操作自述都落在这里）；
+19. **提醒（warn，不拦截）**：某维度 `status=已验证`，且其引用证据的 `artifact` **全部**形如「问答记录…」、去重后题目编号 **<2** → 提醒"知识类结论疑为单题即发已验证"。**warn 不构成门禁**（CI 退出码只看 error），其强制力由 `docs/zero-knowledge-path.zh.md` 的人工清单承担——这是 2.1 修订的明确取舍：漏报的代价是"可能漂移"（有清单兜底），误报的代价是每次正常教学都被阻塞。
 
 ## 更新时机（原文 §十）
 

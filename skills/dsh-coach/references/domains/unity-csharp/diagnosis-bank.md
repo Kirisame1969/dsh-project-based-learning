@@ -5,6 +5,8 @@
 > **每题固定字段**
 > - `考察维度`：7 维度之一（基础知识 / 实际应用 / 问题拆解 / 调试与纠错 / 结构与质量 / 独立程度 / 解释与迁移），与 `state.capability[].dimension` 对齐。
 > - `最小诊断类别`：`理解预测` / `问题定位` / `小型实现`——供引擎凑齐三类最小覆盖时直接筛选。
+> - `类型`：`事实性` / `推理性` / `综合`——**事实性题不得作为首次接触题**：学员尚未学过该知识点时，先按 R9 讲授，再用它作确认题。
+> - `前置知识`：使用本题前必须已具备的内容；**未满足时不得使用**（先补前置，或换一道不需要该前置的题）。
 > - `合格回答要点`：学员答到什么程度可以判为合格；带「加分」的条目用于区分 4 级与 5 级。
 > - `典型错误回答`：出现这些回答时的常见根因，用于定位缺口而不是简单扣分。
 > - `加难追问` / `降难追问`：同一题目的向上、向下变形，不需要另出题。
@@ -16,64 +18,14 @@
 > 1. 先读**文件末尾的《最小覆盖索引》**——它给出每个最小诊断类别可直接使用的题号，以及按项目原型推荐的「三题组合」；
 > 2. 再用题号检索定位该题正文（例如搜索 `Q4-2`），只读本次要用的题目。
 > 3. 提问与复盘时引用题号与考察维度，便于后续核对判分依据。
+>
+> **生命周期题（Q1-1）的依据来源**：Unity 2022.3 官方脚本 API `MonoBehaviour.Awake`——"Unity calls `Awake` on scripts derived from `MonoBehaviour` in the following scenarios: The parent GameObject is active and initializes on Scene load / The parent GameObject goes from inactive to active / After initialization of a parent GameObject created with `Object.Instantiate`"；同页 Example1/Example2 示例：Cube1 初始未勾选（inactive），按空格 `SetActive(true)` **之后**才调用 `Example1.Awake()`，随后 `Start`。核对日期 2026-09-11。
 
 ---
 
 ## 维度 1：基础知识
 
-### Q1-1 生命周期调用顺序
-
-**题目**
-下面这个脚本挂在场景里一个**初始处于未启用**的 GameObject 上（Hierarchy 中该对象未勾选）。之后在运行时把它 `SetActive(true)`。
-
-```csharp
-using UnityEngine;
-
-public class LifecycleProbe : MonoBehaviour
-{
-    [SerializeField] private int seed = 7;
-
-    private void Awake()   { Debug.Log("A"); }
-    private void OnEnable(){ Debug.Log("B"); }
-    private void Start()   { Debug.Log("C"); }
-    private void Update()  { Debug.Log("D"); }
-    private void OnDisable(){ Debug.Log("E"); }
-    private void OnDestroy(){ Debug.Log("F"); }
-}
-```
-
-请说出：从 `SetActive(true)` 那一刻起，Console 里**按什么顺序**出现这些字母，以及每个字母**出现几次**（`Update` 按「至少一次」计）。如果之后又 `SetActive(false)`，再补一句会发生什么。
-
-**考察维度**：基础知识
-**最小诊断类别**：理解预测
-
-**合格回答要点**
-- 在对象未启用时，`Awake` **仍会**被调用（Unity 会在场景加载时对未启用对象也执行 `Awake`；若对象是运行时 `Instantiate` 出来的，则 `Awake` 在该对象被创建时立即调用，即使它未激活）。
-- `OnEnable` 与 `Start` **不会**在未启用时调用；它们推迟到 `SetActive(true)` 之后。
-- 顺序为 `Awake → OnEnable → Start → Update…`，即 A B C D（`Awake` 已在启用前发生）。
-- `SetActive(false)` 触发 `OnDisable`，此后 `Update` 停止；再次 `SetActive(true)` 会**只**再触发 `OnEnable` 与随后的 `Update`，**不会**再触发 `Awake` 或 `Start`。
-- `OnDestroy` 只在对象真正被销毁（`Destroy` 或场景卸载）时触发一次。
-
-**典型错误回答**
-- 「对象没启用，所以 `Awake` 也不会执行」——最常见，说明把「激活状态」和「脚本已被加载」当成一回事。
-- 「每次 `SetActive(true)` 都会重新 `Start` 一次」。
-- 把顺序说成 `Start → Awake → OnEnable`。
-- 认为 `OnDisable` 之后对象就被销毁了（与 `OnDestroy` 混淆）。
-
-**加难追问**
-如果这个对象不是场景里预先摆好的，而是运行时用 `Instantiate` 创建的预制体实例，且预制体在资产里保存时就是**未勾选**状态，`Awake` 的时机与上面有什么不同？再进一步：如果父对象被 `SetActive(false)`，子对象上的 `OnDisable` 会不会触发？
-
-**降难追问**
-只回答一个问题：`Start` 在一个 MonoBehaviour 的一生中会被调用几次？`OnEnable` 呢？为什么这两个答案不一样？
-
-**1–5 等级锚点**
-- 1：认为未启用对象完全不会执行任何回调，或顺序说不出。
-- 2：知道 `Awake` 在最前、`Update` 在最后，但说不清 `OnEnable` 与 `Start` 的先后及重复规则。
-- 3：顺序正确，且知道 `Start` 只一次、`OnEnable` 可多次；对 `Awake` 在未启用状态下的时机不确定但方向正确。
-- 4：顺序与次数全部正确，能说明 `Awake` 与「对象是否已加载」相关而非「是否已激活」。
-- 5：能主动指出 `Instantiate` 与场景预置两种情形下 `Awake` 时机的差异，并由此说明「不要在 `Awake` 里依赖另一个对象的 `Start` 结果」。
-
----
+> **本维度共 2 道题**：Q1-2（下方）与 **Q1-1（已移入《讲授后确认题》）**。Q1-1 属**事实性**题，零基础学员先按 R9 讲授再用它确认；自述熟悉生命周期的学员可直接用它诊断——是否可用由 `前置知识` 与学员记录决定，见《取题前置检查》。
 
 ### Q1-2 Inspector 改了值却不生效
 
@@ -104,6 +56,8 @@ public class PlayerMove : MonoBehaviour
 
 **考察维度**：基础知识
 **最小诊断类别**：问题定位
+**类型**：推理性
+**前置知识**：序列化与 Inspector 基础
 
 **合格回答要点**
 - 直接指出 `Awake()` 里的 `moveSpeed = 5f;` 是元凶：每帧运行前都会把序列化进来的 Inspector 值重新覆盖成 `5`。
@@ -171,6 +125,8 @@ public class Invincible : MonoBehaviour
 
 **考察维度**：实际应用
 **最小诊断类别**：理解预测
+**类型**：推理性
+**前置知识**：协程基础
 
 **合格回答要点**
 - 协程由**那个 MonoBehaviour** 驱动。`enabled = false` 会让该组件上的协程停止推进（Unity 在组件被禁用时停止其协程），后续 `yield` 之后的代码不会继续执行 → `invincible` 会**永久停留在 `true`**。
@@ -213,6 +169,8 @@ public class Invincible : MonoBehaviour
 
 **考察维度**：实际应用
 **最小诊断类别**：小型实现
+**类型**：综合
+**前置知识**：C# 类与资源引用概念
 
 **合格回答要点**
 - 正确写出 `ScriptableObject` 子类，并使用 `[CreateAssetMenu]`（`fileName` / `menuName` 参数任一写法均可）提供创建入口。
@@ -254,6 +212,8 @@ public class Invincible : MonoBehaviour
 
 **考察维度**：问题拆解
 **最小诊断类别**：问题定位
+**类型**：推理性
+**前置知识**：更新循环与性能常识
 
 **合格回答要点**
 - 第一步应当是**用 Profiler 复现并采集**，而不是先改代码。具体做法：打开 Profiler，按 Tab 触发一次卡顿，然后在 CPU 模块里查看这一帧的耗时构成。
@@ -306,6 +266,8 @@ private void Update()
 
 **考察维度**：问题拆解
 **最小诊断类别**：理解预测（先要求预测「哪里会被帧率影响」，再要求列出可验证假设；因此也可当问题定位使用）
+**类型**：推理性
+**前置知识**：物理更新与 FixedUpdate
 
 **合格回答要点**
 - 指出物理是在**固定时间步长**（`FixedUpdate` / `Time.fixedDeltaTime`）里推进的，而 `Update` 按渲染帧执行；两者的调用次数比例不固定。
@@ -376,6 +338,8 @@ public class ShopPanel : MonoBehaviour
 
 **考察维度**：调试与纠错
 **最小诊断类别**：问题定位
+**类型**：推理性
+**前置知识**：事件与委托基础
 
 **合格回答要点**
 - 定位：`OnEnable` 里每次启用都调用 `buyButton.onClick.AddListener(OnBuy)`，但**从来没有解绑**。`AddListener` 是**追加**而不是替换，所以每启用一次就多挂一份委托。
@@ -422,6 +386,8 @@ public class ShopPanel : MonoBehaviour
 
 **考察维度**：调试与纠错
 **最小诊断类别**：问题定位
+**类型**：推理性
+**前置知识**：碰撞体与刚体基础
 
 **合格回答要点**
 - **金币一侧缺刚体**：触发器检测要求至少一方有 Rigidbody。若角色有刚体、金币没有，通常仍应触发（Unity 的 2D 触发器在「一方有 Rigidbody2D」时可工作），所以要验证的是**金币有没有被意外设为 `Static` 并且整棵层级被判定为静态**导致不参与运行时碰撞。更常见的是：角色刚体被设为 `Body Type = Static` 或 `Kinematic` 且金币也是静态 → 两个静态刚体之间不产生接触，不触发。
@@ -467,6 +433,8 @@ public class ShopPanel : MonoBehaviour
 
 **考察维度**：结构与质量
 **最小诊断类别**：问题定位
+**类型**：推理性
+**前置知识**：程序集（asmdef）概念
 
 **合格回答要点**
 - 核心机制：**asmdef 划分了编译边界**。每个 asmdef 是一个独立程序集，默认只能访问自己 + 自己显式引用的其它程序集。拆分之前，所有没有 asmdef 的脚本都在同一个预定义程序集 `Assembly-CSharp` 里，所以互相可见；拆分后这种「默认可见」消失了。
@@ -550,6 +518,8 @@ public class Player : MonoBehaviour
 
 **考察维度**：结构与质量
 **最小诊断类别**：小型实现
+**类型**：综合
+**前置知识**：组件化与单一职责
 
 **合格回答要点**
 - 能识别出这里至少混了 **4 类职责**：输入与移动、射击（含冷却计时）、生命值/受伤、得分与 UI/游戏状态。
@@ -605,6 +575,8 @@ public class Player : MonoBehaviour
 
 **考察维度**：独立程度
 **最小诊断类别**：小型实现
+**类型**：综合
+**前置知识**：实例化与集合操作
 
 **合格回答要点**
 - 用 `Queue<GameObject>` 或 `Stack<GameObject>` 存储空闲对象；用 `Instantiate` 在池空时扩容。
@@ -651,6 +623,8 @@ public class Player : MonoBehaviour
 
 **考察维度**：独立程度
 **最小诊断类别**：小型实现
+**类型**：综合
+**前置知识**：时间与状态管理
 
 **合格回答要点**
 - 用时间戳而不是倒计时累减：记录 `nextAvailableTime = Time.time + cooldown`，判断 `Time.time >= nextAvailableTime`。能说出这种写法的好处——**不会被跳过的帧影响精度**，而 `timer -= Time.deltaTime` 在长帧下会累积误差。
@@ -715,6 +689,8 @@ private void Update()
 
 **考察维度**：解释与迁移
 **最小诊断类别**：理解预测
+**类型**：推理性
+**前置知识**：值类型与引用类型、装箱
 
 **合格回答要点**
 - 必须区分**两个独立的成本**，很多学员会混成一个：
@@ -783,6 +759,8 @@ private void OnEnable()
 
 **考察维度**：解释与迁移
 **最小诊断类别**：问题定位
+**类型**：综合
+**前置知识**：事件订阅与生命周期
 
 **合格回答要点**
 - **片段 1：有同类问题，且更危险。** `EventBus` 是静态/全局的，它的生命周期长于这个 MonoBehaviour；`Start` 只订阅不解绑 → 对象被销毁后**订阅依然存在于总线里**，总线持有该对象的委托引用，导致：
@@ -820,13 +798,86 @@ private void OnEnable()
 
 ---
 
+## 讲授后确认题
+
+> 本节题目**不作为首次接触题**：当学员明说没学过、或该知识点在其记录中既无"已验证"也无"部分验证"时，
+> 先按引擎 **R9** 讲授，再用这些题作**确认题**（确认题不是实测）。题面中的讲授要点即讲授时应覆盖的内容。
+
+### Q1-1 生命周期调用顺序
+
+**题目**
+下面这个脚本挂在场景里一个**初始处于未启用**的 GameObject 上（Hierarchy 中该对象未勾选）。之后在运行时把它 `SetActive(true)`。
+
+```csharp
+using UnityEngine;
+
+public class LifecycleProbe : MonoBehaviour
+{
+    [SerializeField] private int seed = 7;
+
+    private void Awake()   { Debug.Log("A"); }
+    private void OnEnable(){ Debug.Log("B"); }
+    private void Start()   { Debug.Log("C"); }
+    private void Update()  { Debug.Log("D"); }
+    private void OnDisable(){ Debug.Log("E"); }
+    private void OnDestroy(){ Debug.Log("F"); }
+}
+```
+
+请说出：从 `SetActive(true)` 那一刻起，Console 里**按什么顺序**出现这些字母，以及每个字母**出现几次**（`Update` 按「至少一次」计）。如果之后又 `SetActive(false)`，再补一句会发生什么。
+
+**考察维度**：基础知识
+**最小诊断类别**：理解预测
+**类型**：事实性
+**前置知识**：无（但属边界细节：仅在学员自述熟悉生命周期、或已按 R9 讲授后使用）
+
+**合格回答要点**（依据见文件头部「生命周期题（Q1-1）的依据来源」）
+- 关键区分：`Awake` 绑定的是「脚本实例何时被创建」，**不是**「对象是否已激活」。官方文档列出三种触发情形：父对象**处于激活**且在场景加载时初始化、父对象**由未激活转为激活**、`Instantiate` 创建的对象初始化之后。
+- 因此本题的对象初始未激活，**场景加载时不会执行 `Awake`**；它推迟到 `SetActive(true)` 那一刻。正确顺序是 `Awake → OnEnable → Start → Update…`，即从 `SetActive(true)` 起依次出现 A B C D…（`Awake` 与 `OnEnable` 的先后不可颠倒）。
+- `SetActive(false)` 只触发 `OnDisable`（E），此后 `Update` 停止，**不会**触发 `OnDestroy`；`OnDestroy` 只在真正销毁（`Destroy` 或场景卸载）时触发一次。
+- 再次 `SetActive(true)` 会**只**再触发 `OnEnable` 与随后的 `Update`，**不会**再触发 `Awake` 或 `Start`。
+- 判分边界（勿与本题混淆）：`enabled = false`（**组件**禁用）与对象未激活不是一回事——官方文档明确 `Awake` 在「脚本是激活对象上的禁用组件」时**仍会**执行。
+
+**典型错误回答**
+- 把顺序说成 `OnEnable → Awake → Start → Update`（激活回调排在初始化回调之前）——最常见，说明把「对象被激活」与「脚本实例被创建」当成同一件事。
+- 「每次 `SetActive(true)` 都会重新 `Start` 一次」。
+- 把顺序说成 `Start → Awake → OnEnable`。
+- 认为 `SetActive(false)` 会触发 `OnDestroy`，或把 `OnDisable` 与 `OnDestroy` 混为一谈。
+- 反向错误：以为本题对象在场景加载时就执行了 `Awake`（把「激活对象上的禁用组件仍会执行 `Awake`」这条规则错误外推到「未激活对象」）。
+
+**加难追问**
+如果这个对象不是场景里预先摆好的，而是运行时用 `Instantiate` 创建的预制体实例，且预制体在资产里保存时就是**未勾选**状态，`Awake` 的时机与上面有什么不同？再进一步：如果父对象被 `SetActive(false)`，子对象上的 `OnDisable` 会不会触发？
+（判分注意：官方文档对「`Instantiate` 创建」这一情形未加「处于激活」的限定词，与「场景中初始未激活」的措辞不同——这属于引擎 **R10 的例外情形（文档措辞自相矛盾／版本差异）**，因此**可以**要求实测：先给出所依据的文档章节，再让学员实测确认，而不是凭文档措辞反推。其余情形（生命周期顺序本身）按 R10 属"通常可静态判定"，不需实测。）
+
+**降难追问**
+只回答一个问题：`Start` 在一个 MonoBehaviour 的一生中会被调用几次？`OnEnable` 呢？为什么这两个答案不一样？
+
+**1–5 等级锚点**
+- 1：认为未启用对象完全不会执行任何回调，或顺序说不出。
+- 2：知道 `Awake` 在最前、`Update` 在最后，但把 `Awake` 与 `OnEnable` 的先后说反，或说不清 `Start` 只一次而 `OnEnable` 可多次。
+- 3：顺序正确（`Awake → OnEnable → Start → Update…`），知道 `Start` 只一次、`OnEnable` 可多次，但仍不确定 `SetActive(false)` 是否触发 `OnDestroy`。
+- 4：顺序、次数与 `SetActive(false)` 的后果全部正确，能说明 `Awake` 与「脚本实例是否已创建」相关，并能区分 `enabled = false` 与 `SetActive(false)`。
+- 5：能主动指出 `Instantiate`（含运行时创建）与场景预置两种情形下 `Awake` 时机的差异，并由此说明「不要在 `Awake` 里依赖另一个对象的 `Start` 结果」。
+
+**讲授要点（讲授时须覆盖）**
+
+- 本题对象**初始未激活**：**场景加载时不会执行 `Awake`**；它推迟到 `SetActive(true)` 那一刻。从那一刻起依次是 `Awake → OnEnable → Start → Update…`（A B C D…），**`Awake` 与 `OnEnable` 的先后不可颠倒**。
+- 关键区分：`Awake` 绑定的是「**脚本实例何时被创建**」，**不是**「对象是否已激活」；官方文档列出的三种触发情形见上方「合格回答要点」。
+- `Start` 一生只一次；`OnEnable`／`OnDisable` 可多次；`Update` 随激活状态启停；再次 `SetActive(true)` **不会**重跑 `Awake`／`Start`。
+- `OnDestroy` 只在真正销毁时一次；`SetActive(false)` **不是**销毁，只触发 `OnDisable`。
+- **易混边界（勿外推）**：`enabled = false`（**组件**禁用、对象仍激活）时 `Awake` **仍会**执行——这条**不适用**于「未激活对象」，把它外推正是本题的典型错误回答之一。
+- `Instantiate` 创建的对象（含资产里就未勾选的预制体）`Awake` 时机与上面不同，属 R10 的例外情形，需按文档章节实测确认。
+- 判分仍用本题原有的 1–5 等级锚点，但**结论用于确认讲授效果**，不是首次能力诊断。
+
+---
+
 ## 最小覆盖索引
 
 排一次 3 题诊断时，按下列组合任选一组即可满足「一项理解预测 + 一项问题定位 + 一项小型实现」，且不重复维度。
 
 | 类别 | 可用题目 |
 | --- | --- |
-| **理解预测** | Q1-1 生命周期顺序、Q2-1 协程与禁用销毁、Q3-2 物理与帧率、Q7-1 GC 开销预测 |
+| **理解预测** | Q2-1 协程与禁用销毁、Q3-2 物理与帧率、Q7-1 GC 开销预测（Q1-1 已移入《讲授后确认题》，只作讲授后的确认使用） |
 | **问题定位** | Q1-2 Inspector 值被覆盖、Q3-1 打开背包卡顿、Q4-1 按钮重复触发、Q4-2 触发器不触发、Q5-1 asmdef 引用、Q7-2 订阅泄漏迁移 |
 | **小型实现** | Q2-2 ScriptableObject 配置、Q5-2 拆分上帝类、Q6-1 对象池、Q6-2 技能冷却 |
 
@@ -834,9 +885,9 @@ private void OnEnable()
 
 | 学员要做哪个原型 | 推荐组合 | 理由 |
 | --- | --- | --- |
-| 2D 玩法原型 | Q1-1 + Q4-2 + Q6-1 | 生命周期是地基；触发器是 2D 最高频卡点；对象池是该原型的第一扩展项 |
-| 3D 移动与相机 | Q1-1 + Q3-2 + Q6-2 | 时序与帧率直接影响手感；冷却/计时考察是否理解时间源 |
-| 编辑器工具 / 资源管线 | Q1-2 + Q5-1 + Q2-2 | 序列化与 Inspector 是编辑器侧的日常；asmdef 决定工具能否打包 |
-| 数据驱动 UI 与存档 | Q1-2 + Q4-1 + Q2-2 | 配置读不到与事件重复绑定是这个原型的两大复发点 |
-| 小规模网络同步 | Q2-1 + Q4-1 + Q3-1 | 生命周期与断线回调强相关；订阅泄漏在联网场景会放大 |
-| 性能优化专项 | Q7-1 + Q3-1 + Q7-2 | 必须能把「调用开销」和「GC 分配」分开，且能用数据定位 |
+| 2D 玩法原型 | Q3-2 + Q4-2 + Q6-1 | 物理与帧率是 2D 手感的直接来源；触发器是 2D 最高频卡点；对象池是该原型的第一扩展项 |
+| 3D 移动与相机 | Q2-1 + Q3-2 + Q6-2 | 协程与对象禁用／销毁直接关系到相机与状态复位；帧率影响手感；冷却/计时考察时间源理解 |
+| 编辑器工具 / 资源管线 | Q7-1 + Q5-1 + Q2-2 | 分配开销预测决定工具能否用在批量场景；asmdef 决定工具能否打包；配置化是编辑器侧的日常 |
+| 数据驱动 UI 与存档 | Q2-1 + Q4-1 + Q2-2 | 生命周期与禁用/销毁直接决定 UI 回调是否还在跑；事件重复绑定是复发点；配置化是存档的基础 |
+| 小规模网络同步 | Q2-1 + Q4-1 + Q6-2 | 生命周期与断线回调强相关；订阅泄漏在联网场景会放大；计时/状态管理要能脱离协程实现 |
+| 性能优化专项 | Q7-1 + Q3-1 + Q6-1 | 必须能把「调用开销」和「GC 分配」分开，且能用数据定位；对象池是最小可验证的优化实现 |

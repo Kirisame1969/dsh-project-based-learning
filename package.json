@@ -1,6 +1,6 @@
 {
   "name": "dsh-coach",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "项目制学习教练：学科无关的教学引擎 + 可替换领域包（随包提供 Unity/C# 特化）。以 DSH 技能与组合包双形态分发。",
   "type": "module",
   "main": "lib/index.js",

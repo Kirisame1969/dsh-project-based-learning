@@ -91,6 +91,28 @@ if (demoState && !demoState.__parseError) {
   }
 }
 
+// ── 3.5 ST-W7：知识类"单题即发已验证"必须被提醒 ─────────────────────────────
+// 修订 2.1 的取舍：这是 warn（只提醒、不拦截），所以断言必须同时检查
+// "命中了 warn" 与 "没有升级成 error"——否则一次改动就可能把它变成门禁。
+if (demoState && !demoState.__parseError) {
+  const probe = JSON.parse(JSON.stringify(demoState));
+  probe.evidence.push(
+    { id: 'E90', stage: 0, claim: '能解释生命周期回调的顺序与次数', artifact: '问答记录：Q1-1 作答原文', strength: '已验证', note: '' },
+    { id: 'E91', stage: 0, claim: '同一知识点的追问记录', artifact: '问答记录：Q1-1 加难追问', strength: '已验证', note: '' },
+  );
+  const target = probe.capability.find((c) => c.dimension === '解释与迁移');
+  target.status = '已验证';
+  target.level = 3;
+  target.evidence = ['E90', 'E91'];
+  const r = new Report();
+  checkState(r, probe);
+  const hit = r.warns.some((x) => x.rule === 'ST-W7');
+  const escalated = r.errors.some((x) => x.rule === 'ST-W7');
+  if (hit && !escalated) record('ST-W7 提醒（单题即发已验证）', 'PASS', '命中 warn，且未升级为 error');
+  else if (escalated) record('ST-W7 提醒（单题即发已验证）', 'FAIL', 'ST-W7 被当作 error 拦截（应为 warn-only）');
+  else record('ST-W7 提醒（单题即发已验证）', 'FAIL', '未命中 ST-W7');
+}
+
 // ── 4. 分层负例：注入硬令牌必须被发现 ───────────────────────────────────────
 const tempRoot = path.join(SKILL_DIR, '..', '.selftest-tmp');
 try {

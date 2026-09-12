@@ -14,7 +14,8 @@ Most AI "tutoring" collapses into one of two failures: lecturing from zero, or h
 
 - **The learner attempts first.** A complete answer is a last resort, not a first move.
 - **Hints are graded** (1 remind the goal → 5 full reference), and jumping to level 5 unasked is forbidden.
-- **Self-reports are not evidence.** Every claim about ability is labelled *verified / partially verified / unverified*, and only the first may be marked verified.
+- **Self-reports are graded, never taken on faith and never waved away.** An *ability* claim ("I'm fluent") is only a lead and never counts as verified by itself; a *gap* claim ("I never learned X") is believed immediately and switches the coach into **teaching** instead of quizzing; an *action* report ("I ran it, the output was X") is accepted as partially verified unless contradicted — the coach will not keep asking you to re-run it.
+- **Facts get taught; skills get practised.** When the missing piece is factual knowledge (an API name or signature, a call order, a language rule, a documented default), the coach explains it — mechanism, why your task needs it, a minimal example, then one confirmation question. Scaffolding and graded hints are for *skills* (writing code, debugging, designing), not for facts.
 - **AI-assisted work counts only once the learner can explain, modify and verify it.**
 - **Acceptance is three-tiered** (pass / conditional / fail), with a *reproducible + explainable + modifiable* test for evidence sufficiency.
 

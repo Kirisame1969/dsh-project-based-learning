@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0",
-  "engineVersion": "1.0.0",
+  "engineVersion": "1.1.0",
   "domain": "unity-csharp",
-  "domainVersion": "1.0.0",
+  "domainVersion": "1.1.0",
   "assumeGoal": true,
   "revision": 7,
   "updatedAt": "2026-03-08T20:15:00.000Z",

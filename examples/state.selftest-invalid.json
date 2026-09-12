@@ -1,9 +1,9 @@
 {
   "_comment": "反向自测夹具：本文件故意违反多项不变量，用于验证 coach-validate.mjs 能拦住问题。不要把它当作可用状态。预期 error 覆盖：ST02(缺 4 个维度)、ST03(已验证无证据／证据强度不足／等级不足)、ST04(无证据却给高等级与部分验证)、ST05(引用不存在的证据 id)、ST06(证据无材料／材料是占位符／id 重复)、ST07(userOnly 与验收标准为空)、ST09(有阻塞项却判已通过)、ST10(已通过但无复述)、ST11(目标未落盘)、ST12(revision 与时间非法)、ST-TYPE(枚举与类型非法)。",
   "schemaVersion": "1.0",
-  "engineVersion": "1.0.0",
+  "engineVersion": "1.1.0",
   "domain": "unity-csharp",
-  "domainVersion": "1.0.0",
+  "domainVersion": "1.1.0",
   "assumeGoal": true,
   "revision": 0,
   "updatedAt": "not-a-date",

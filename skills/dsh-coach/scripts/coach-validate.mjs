@@ -267,6 +267,29 @@ function checkCapability(r, capability, evidence) {
           r.error('ST03', `${w}.status`, `标记"已验证"，但引用的证据强度为 ${strengths.filter(Boolean).join(' / ') || '（无）'}，没有一条是"已验证"`, '把被引用证据的强度提升为"已验证"，或把本维度降级为"部分验证"');
         }
       }
+      // F8-lite（修订 2.1）：知识类结论疑为"单题即发已验证"——**只提醒，不拦截**。
+      // 取舍理由见 docs/ENGINE-REVISION-2.zh.md §7.3：误报的代价是每次正常教学被阻塞。
+      // 闭合的绕过路径（第 2 轮审核提出）：
+      //   A 改前缀（"诊断问答："）→ 改为按题号正则识别，不看前缀；
+      //   B 混入一条非问答记录 → 只统计 strength=已验证 的证据，混入待验证证据无效；
+      //   C 伪造题号（"Q1-1 加难追问（对照 Q2-1）"）→ 题号归一化为 `主-次` 并取首个匹配；
+      //   E 裸 `Q` 误报 → 正则要求 `Q<数字>-<数字>`。
+      // 残余边界（如实声明）：把 status 降为"部分验证"仍可完全回避本提醒——这正是它**只做提醒**的原因。
+      if (ev.length > 0) {
+        const refs = ev.map((id) => evIndex.get(id)).filter(Boolean);
+        const verified = refs.filter((e) => e.strength === '已验证');
+        const topicOf = (e) => {
+          const m = /Q(\d+)-(\d+)/i.exec(String(e.artifact));
+          return m ? `${m[1]}-${m[2]}` : null;
+        };
+        const untagged = verified.filter((e) => topicOf(e) === null).length;
+        if (verified.length > 0 && untagged === 0) {
+          const topics = new Set(verified.map(topicOf));
+          if (topics.size < 2) {
+            r.warn('ST-W7', `${w}.status`, '知识类结论疑为"单题即发已验证"：标"已验证"的证据全部指向同一道题（按题号去重）', '按 diagnosis.md 的证据分层：知识类需"无提示解释机制 ＋ 迁移到新情境"；单题正确只算"部分验证"');
+          }
+        }
+      }
     }
     if (c.status === '部分验证' && ev.length > 0) {
       const strengths = strengthsOf(ev);
@@ -303,9 +326,9 @@ function checkEvidence(r, evidence) {
     if (!isNonEmptyStr(e.id)) r.error('ST06', `${w}.id`, '证据 id 必须非空', null);
     else if (ids.has(e.id)) r.error('ST06', `${w}.id`, `证据 id 重复：${e.id}`, null);
     else ids.add(e.id);
-    if (!isInt(e.stage) || e.stage < 1) r.error('ST-TYPE', `${w}.stage`, '必须是对应阶段号（≥1 的整数）', null);
+    if (!isInt(e.stage) || e.stage < 0) r.error('ST-TYPE', `${w}.stage`, '必须是 ≥0 的整数（0 表示诊断期证据）', null);
     if (!isNonEmptyStr(e.claim)) r.error('ST-TYPE', `${w}.claim`, '必须说明这条证据支持什么结论', null);
-    if (!isNonEmptyStr(e.artifact)) r.error('ST06', `${w}.artifact`, '证据必须指向可核对材料（文件/日志/截图/复现步骤）', '声称"我做了"不是证据');
+    if (!isNonEmptyStr(e.artifact)) r.error('ST06', `${w}.artifact`, '证据必须指向可核对材料（文件与行号／日志片段／截图位置／可复现步骤／问答记录／操作自述记录）', '能力自述不是证据；缺口自述转 R9 讲授；操作自述按"部分验证"接受，不要求重复实测');
     else if (PLACEHOLDER_ARTIFACTS.has(e.artifact.trim().toLowerCase())) {
       r.error('ST06', `${w}.artifact`, `"${e.artifact}" 是占位符，不是可核对材料`, '写出具体文件路径与行号、日志片段、截图位置或可复现步骤');
     }
@@ -623,7 +646,10 @@ function renderProgress(state, statePathLabel) {
   else {
     L.push('| id | 阶段 | 支持结论 | 材料 | 强度 |');
     L.push('|---|---:|---|---|---|');
-    for (const e of state.evidence) L.push(`| ${e.id} | ${e.stage} | ${e.claim} | ${e.artifact} | ${e.strength} |`);
+    for (const e of state.evidence) {
+      const stageLabel = e.stage === 0 ? '诊断期' : String(e.stage);
+      L.push(`| ${e.id} | ${stageLabel} | ${e.claim} | ${e.artifact} | ${e.strength} |`);
+    }
   }
   L.push('');
   L.push('## 已完成任务');
