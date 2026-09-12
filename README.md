@@ -28,8 +28,8 @@ These rules are not just prose: a zero-dependency validator enforces them mechan
 Into any DSH profile:
 
 ```bash
-dsh plugin --profile web add dsh-coach          # or --profile headless, or your own profile
-dsh --profile web --dump-config                 # the dsh-coach layer should appear
+dsh plugin --profile web add dsh-project-based-learning    # or --profile headless, or your own profile
+dsh --profile web --dump-config                 # the dsh-project-based-learning layer should appear
 ```
 
 Without npm, install straight from this repository:
@@ -45,7 +45,7 @@ The bundle layer (`cordis.patch.yml`) registers the packaged skill through `ctx.
 Into a DSH skill root (project-scoped `.dsh/skills/`, or `$DSH_HOME/skills/` for every workspace):
 
 ```bash
-npx -y -p dsh-coach coach-install --dest-root "$DSH_HOME/skills"
+npx -y -p dsh-project-based-learning coach-install --dest-root "$DSH_HOME/skills"
 ```
 
 From a checkout, the same installer runs locally and supports `--dry-run`, `--link` and `--force`:

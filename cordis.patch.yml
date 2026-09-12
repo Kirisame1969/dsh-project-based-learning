@@ -5,10 +5,11 @@
 # 整行替换该行（config 整体替换）。
 #
 # `name` 是加载器要 import 的模块名：解析到本包的入口（package.json#main → index.js），
-# 由它调用 `ctx.skills.register()` 注册技能。
+# 由它调用 `ctx.skills.register()` 注册技能。**它必须等于本包的 npm 包名**，改名时同步此
+# 行，否则层加载会因模块解析失败而报错。
 #
 # 前提：目标 profile 已挂载 `@deepseek-ai/dsh-skill`（`@deepseek-ai/dsh-base` 已包含）。
 # 本包不贡献任何工具，也不改动既有行。
 - insert:
     - id: dsh-coach
-      name: dsh-coach
+      name: dsh-project-based-learning

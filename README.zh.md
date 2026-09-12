@@ -28,8 +28,8 @@ AI"辅导"通常掉进两个坑：从零开始照本宣科，或者直接替人�
 装进任意 DSH profile：
 
 ```bash
-dsh plugin --profile web add dsh-coach          # 也可用 --profile headless 或你自己的 profile
-dsh --profile web --dump-config                 # 应出现 dsh-coach 层
+dsh plugin --profile web add dsh-project-based-learning    # 也可用 --profile headless 或你自己的 profile
+dsh --profile web --dump-config                 # 应出现 dsh-project-based-learning 层
 ```
 
 不经 npm，直接从本仓库安装：
@@ -45,7 +45,7 @@ dsh plugin --profile web add github:Kirisame1969/dsh-project-based-learning
 装进任意 DSH 技能根（项目级 `.dsh/skills/`，或用户级 `$DSH_HOME/skills/`）：
 
 ```bash
-npx -y -p dsh-coach coach-install --dest-root "$DSH_HOME/skills"
+npx -y -p dsh-project-based-learning coach-install --dest-root "$DSH_HOME/skills"
 ```
 
 若已有本仓库检出，可直接运行同一个安装器，支持 `--dry-run`、`--link` 与 `--force`：

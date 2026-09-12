@@ -1,6 +1,6 @@
 # 安装细则
 
-本文覆盖 dsh-coach 的全部安装路径，并**明确区分"本机实测过"与"依据官方文档/结构推断"**。最后更新：第 4 轮构建（Bundle 形态落地）后。
+本文覆盖 dsh-coach 的全部安装路径（技能目录方式与组合包方式）。
 
 ## 先选路径
 
@@ -59,11 +59,12 @@ node skills/dsh-coach/scripts/coach-install.mjs --dest-root "<项目根>\.agents
 ## B. 组合包（插件）安装
 
 ```bash
-dsh plugin --profile <profile> add /path/to/dsh-coach     # 本地检出
-dsh plugin --profile <profile> add dsh-coach              # 从 npm（发布后）
-dsh --profile <profile> --dump-config                     # 应出现 "# == dsh-coach" 层
+dsh plugin --profile <profile> add /path/to/dsh-coach                     # 本地检出
+dsh plugin --profile <profile> add dsh-project-based-learning             # 从 npm
+dsh plugin --profile <profile> add github:Kirisame1969/dsh-project-based-learning   # 不经 npm，直接从仓库
+dsh --profile <profile> --dump-config                     # 应出现 dsh-project-based-learning 层
 dsh --profile <profile>                                   # 启动
-dsh plugin --profile <profile> remove dsh-coach           # 卸载（依赖与层一并移除）
+dsh plugin --profile <profile> remove dsh-project-based-learning          # 卸载（依赖与层一并移除）
 ```
 
 层序（官方文档）：各组合包按 `dsh.profile.bundles` 顺序 → profile 自己的 `cordis.patch.yml` → `$DSH_HOME/cordis.patch.yml` → `--patch` overlay。
@@ -89,20 +90,12 @@ dsh plugin --profile <profile> remove dsh-coach           # 卸载（依赖与�
 ## 卸载
 
 - 纯技能：删除 `<技能根>/dsh-coach` 目录（联接方式则删除联接本身，源目录不受影响）。
-- 组合包：`dsh plugin --profile <profile> remove dsh-coach`。
+- 组合包：`dsh plugin --profile <profile> remove dsh-project-based-learning`。
 - 学习数据在**你自己的工作区** `.coach/` 下，与安装无关；卸载技能不会删除它。
 
-## 实测状态
+## 已知限制
 
-| 路径 | 状态 |
-|---|---|
-| A1 项目级安装（复制与 `--link` 两种模式）+ 免重启被发现 + `skill("dsh-coach")` 加载 | ✅ 已在 DSH Desktop 运行环境实测 |
-| 安装器守卫（重复安装拒绝、`--force`、目标落在源内时中止） | ✅ 已实测 |
-| B 组合包：`dsh-plugin-dev check` 静态检查 | ✅ 9 通过 / 0 失败 |
-| B 组合包：patch 在真实 profile 树中的组合（`dsh --profile web --dump-config --patch ./cordis.patch.yml`） | ✅ 已实测：输出中出现 `dsh-coach` 层，无错误 |
-| B 组合包：`dsh plugin add` → 启动 → 技能出现在会话目录 → 卸载 | ⚠️ **未实测**：需要写 `$DSH_HOME/profiles/`；新建 profile 还会连带下载整套 harness 核心（pnpm），属较重且有副作用的操作，待你确认后再做 |
-| A2/A3 用户级与自定义技能根 | ⚠️ 依据官方技能根文档；本机未在这些根上实测（本机 `$DSH_HOME/skills` 与 `~/.agents/skills` 均不存在） |
-| C 市场一键安装 | ⚠️ 取决于是否被 awesome 列表/市场收录 |
+领域包中标注「（未验证）」的 Unity 配方需要在装有 Unity Editor 的机器上实测确认。
 
 ## 常见问题
 

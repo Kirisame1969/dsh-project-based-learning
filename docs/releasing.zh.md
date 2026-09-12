@@ -1,6 +1,6 @@
 # 发布清单
 
-> **当前状态（2026-09-12 核实）**：仓库 <https://github.com/Kirisame1969/dsh-project-based-learning> **已公开**（已认证 API 返回 `"private": false`，默认分支 `main`，GitHub 已识别 MIT，10 个 topics 保留）。远端 `main` = `372f381`（即 1.0.0）；本地已到 **1.1.0**，并已 rebase 到远端之上（5 个提交 `ee5454f` → `79ac239`），**可 fast-forward 推送，无需覆盖远端历史**。npm 未发布（包名 `dsh-coach` 未被占用）。
+> **当前状态（2026-09-12 核实）**：仓库 <https://github.com/Kirisame1969/dsh-project-based-learning> **已公开**（已认证 API 返回 `"private": false`，默认分支 `main`，GitHub 已识别 MIT，10 个 topics 保留）。远端 `main` = `43e3008`（**1.1.0**，CI 通过）；本地与远端一致。npm 包名定为本仓库同名 `dsh-project-based-learning`（发布前核实未被占用）。
 >
 > 本文件保留推送、npm 发布与社区列表投稿的步骤，以及本机通道的实测结论。
 
@@ -37,14 +37,14 @@ git -C coach -c http.extraheader="AUTHORIZATION: basic $b64" `
 
 ```bash
 npm login                        # 需要账号持有人完成浏览器授权
-npm publish --access public      # 包名 dsh-coach 未被占用（已核实 404）
+npm publish --access public      # 包名 dsh-project-based-learning（发布前已核实未被占用）
 ```
 
 发布后自检：
 
 ```bash
-npm view dsh-coach version
-dsh plugin --profile web add dsh-coach
+npm view dsh-project-based-learning version
+dsh plugin --profile web add dsh-project-based-learning
 ```
 
 ## 3. 提交到社区列表（"被搜到"的关键）
@@ -52,7 +52,7 @@ dsh plugin --profile web add dsh-coach
 **已确认的提交形态**：向 [awesome-dsh-plugin/awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) 提 PR，新增一个目录条目文件 `data/plugins/<owner>__<repo>.yml`（本地草稿在 `.publish/awesome-submission/`）。标题遵循仓库既有先例（已合并的 [PR #3405](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/3405)）：
 
 ```
-feat(catalog): add dsh-coach by Kirisame1969
+feat(catalog): add dsh-project-based-learning by Kirisame1969
 ```
 
 相关仓库（按需一并提交）：
@@ -75,7 +75,7 @@ feat(catalog): add dsh-coach by Kirisame1969
 
 | 事项 | 结论 |
 |---|---|
-| 原生安装 `dsh plugin --profile <p> add <spec>` | ✅ 可用。`github:Kirisame1969/dsh-project-based-learning` 与 `file:<本地路径>` 均成功；profile 的 `package.json` 写入 `dsh.profile.bundles`，`--dump-config` 出现 `dsh-coach` 层 |
+| 原生安装 `dsh plugin --profile <p> add <spec>` | ✅ 可用。`github:Kirisame1969/dsh-project-based-learning` 与 `file:<本地路径>` 均成功；profile 的 `package.json` 写入 `dsh.profile.bundles`，`--dump-config` 出现 `dsh-project-based-learning` 层 |
 | profile 的 pnpm 配置 | `nodeLinker: hoisted`、`autoInstallPeers: false` → 必装 peer 无法自动补装，首次安装会以退出码 1 结束。因此 `peerDependenciesMeta` 必须把 `@deepseek-ai/cordis` 与 `@deepseek-ai/dsh` 都标为 `optional`（已改，实测退出码 0） |
 | `dsh-plugin-dev verify` | pack ✅ / install ✅ / dump-config ✅；headless 冒烟 ✗，原因是临时 DSH_HOME 里官方基础插件 `@deepseek-ai/dsh-web-fetch-http` 找不到 `@deepseek-ai/dsh-http-proxy`，与本包无关 |
 | `dsh` CLI 位置 | `%LOCALAPPDATA%\Programs\DSH Desktop\resources\app\node_modules\@deepseek-ai\dsh\lib\bin.js`（不在 PATH 上，调用时需给全路径或自建包装脚本） |

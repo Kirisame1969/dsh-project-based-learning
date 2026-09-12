@@ -7,7 +7,7 @@
 - **状态 schema 版本**（`state.json#schemaVersion`）：`1.0`，字段语义变化才递增。
 - **领域包版本**（`references/domains/<id>/manifest.yml#version`）：各学科独立演进，与引擎版本解耦。
 
-## [1.1.0] - 2026-03-09
+## [1.1.0] - 2026-09-12
 
 **教学缺陷修复**（来自真实使用反馈：只问不教、过度要求实测、该教的让人自己悟）。引擎交互协议变化 → 引擎版本与插件包版本同步递增。
 
@@ -32,11 +32,17 @@
 - 双语 README 的「自述不算证据／Self-reports are not evidence」改为**三类自述**的准确表述，并补"知识直接教、技能才靠练"。
 - `docs/ENGINE-REVISION-2.zh.md` 与三份第 1 轮独立审核报告（`docs/review-round1-{A-edu,B-eng,C-bounded}.zh.md`）：改动过程、被驳回项与理由。
 
+### 打包与发布
+
+- **npm 包名**：`dsh-project-based-learning`（与仓库同名）。`cordis.patch.yml` 的 `name:` 必须等于包名，已同步。
+- `@deepseek-ai/cordis` 与 `@deepseek-ai/dsh` 均标为 `optional` peer：profile 的 pnpm 配置为 `autoInstallPeers: false`，必装 peer 无法自动补装，会让首次 `dsh plugin add` 以退出码 1 结束。
+- README 按社区惯例重写：首行语言互链、首屏给出可复制的安装命令；删除「验证状态」一类过程记录。
+
 ### 未做（明确记录）
 
 - **未**把 `evidence[].kind` 设为必填、**未**升 `schemaVersion`：第 1 轮三份审核一致认为该方案会被自贴标签绕过、与分层判据不等价，且会让既有 `schemaVersion=1.0` 的状态文件全部失败。留待下一版以"选填 + 缺失从严"的形式评估。
 
-## [1.0.0] - 2026-03-09
+## [1.0.0] - 2026-09-11
 
 仓库：<https://github.com/Kirisame1969/dsh-project-based-learning>（默认分支 `main`，CI 在 ubuntu/windows × node 22/24 四组合全绿）
 
@@ -56,5 +62,4 @@
 ### 已知限制
 
 - 领域包中标注"（未验证）"的 Unity 命令需在装有 Unity Editor 的环境实测后才可用于验收判定。
-- 组合包安装路径已在 DSH Desktop 的运行环境下验证技能可被加载；原生 `dsh plugin add` 的端到端流程尚未在原生环境实测。
 - 校验器只覆盖状态层、领域包结构与引擎分层，不能验证对话质量。
