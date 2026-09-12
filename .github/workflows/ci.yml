@@ -27,12 +27,12 @@ jobs:
 
       # 校验器自身的回归自测：含反向夹具与分层负例
       - name: Validator selftest
-        run: node skills/dsh-coach/scripts/coach-selftest.mjs
+        run: node skills/dsh-project-based-learning/scripts/coach-selftest.mjs
 
       # 正向夹具：真实领域包下的完整校验
       - name: Validate demo state
-        run: node skills/dsh-coach/scripts/coach-validate.mjs --state examples/state.demo.json
+        run: node skills/dsh-project-based-learning/scripts/coach-validate.mjs --state examples/state.demo.json
 
       # 渲染视图，确认生成路径可用
       - name: Render progress view
-        run: node skills/dsh-coach/scripts/coach-validate.mjs --state examples/state.demo.json --render --out "${{ runner.temp }}/PROGRESS.md"
+        run: node skills/dsh-project-based-learning/scripts/coach-validate.mjs --state examples/state.demo.json --render --out "${{ runner.temp }}/PROGRESS.md"
