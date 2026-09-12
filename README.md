@@ -1,12 +1,12 @@
+[简体中文](README.zh.md)
+
 # dsh-coach
 
-**A project-based learning coach for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (DSH).**
+**A project-based learning coach for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (DSH): the learner does the work, the coach runs the loop.**
 
 One tree, two forms: a **skill**, and an installable **plugin bundle**. The teaching engine is subject-agnostic; subject knowledge lives in swappable **domain packs** (one ships today: Unity / C#).
 
 It does not tutor by lecturing. It runs a loop: confirm the goal → diagnose with real tasks → build an evidence-backed capability baseline → set staged deliverables → let the learner attempt first → review with graded problems → accept or reject a stage on evidence.
-
-Chinese documentation: [`README.zh.md`](README.zh.md).
 
 ## Why it exists
 
@@ -21,35 +21,39 @@ Most AI "tutoring" collapses into one of two failures: lecturing from zero, or h
 
 These rules are not just prose: a zero-dependency validator enforces them mechanically on the learner's state file.
 
-## Quick start
+## Install
 
-### Option 1 — plain skill (no build, no dependencies)
+### Option 1 — plugin bundle (recommended)
 
-Copy the skill directory into any DSH skill root:
+Into any DSH profile:
 
 ```bash
-# project-scoped: applies to this working directory
-cp -r skills/dsh-coach <your-project>/.dsh/skills/
-
-# user-scoped: applies to every workspace (native DSH home defaults to ~/.dsh)
-cp -r skills/dsh-coach "$DSH_HOME/skills/"
+dsh plugin --profile web add dsh-coach          # or --profile headless, or your own profile
+dsh --profile web --dump-config                 # the dsh-coach layer should appear
 ```
 
-There is also an installer with guards and a `--dry-run`:
+Without npm, install straight from this repository:
+
+```bash
+dsh plugin --profile web add github:Kirisame1969/dsh-project-based-learning
+```
+
+The bundle layer (`cordis.patch.yml`) registers the packaged skill through `ctx.skills.register()`. The plugin only consumes the `skills` service — it imports nothing from the harness and brings no second copy of Cordis.
+
+### Option 2 — skill files only
+
+Into a DSH skill root (project-scoped `.dsh/skills/`, or `$DSH_HOME/skills/` for every workspace):
+
+```bash
+npx -y -p dsh-coach coach-install --dest-root "$DSH_HOME/skills"
+```
+
+From a checkout, the same installer runs locally and supports `--dry-run`, `--link` and `--force`:
 
 ```bash
 node skills/dsh-coach/scripts/coach-install.mjs --dry-run
 node skills/dsh-coach/scripts/coach-install.mjs --dest-root "$DSH_HOME/skills"
 ```
-
-### Option 2 — plugin bundle
-
-```bash
-dsh plugin --profile <profile> add /path/to/this/repo     # local checkout
-dsh --profile <profile> --dump-config                     # the dsh-coach layer should appear
-```
-
-The bundle layer (`cordis.patch.yml`) registers the packaged skill through `ctx.skills.register()`. The plugin only consumes the `skills` service — it imports nothing from the harness and brings no second copy of Cordis.
 
 ### Option 3 — no install at all
 
@@ -92,21 +96,6 @@ skills/dsh-coach/
   node skills/dsh-coach/scripts/coach-validate.mjs --state .coach/state.json --render
   ```
 
-## Verification status
-
-What has actually been executed, versus what is only documented:
-
-| Item | Status |
-|---|---|
-| `coach-selftest.mjs` (validator regression, incl. adversarial fixtures) | ✅ 9/9 pass |
-| `test/entry.smoke.mjs` (bundle entry contract) | ✅ pass |
-| `dsh-plugin-dev check` (community static checker) | ✅ 9 passed / 0 failed (2 warnings, both about README conventions — see below) |
-| Skill discovery on DSH Desktop (project skill root, no restart) | ✅ verified |
-| Bundle install via native `dsh plugin add` | ⚠️ not yet executed on a native CLI (structure follows the official publish tutorial) |
-| Unity recipes marked「（未验证）」in the domain pack | ⚠️ require a machine with Unity Editor |
-
-> About that one warning: the checker expects READMEs in five languages (its author's own convention). The official harness repository ships English + Chinese only, and so does this project. We do not ship unreviewed machine translations.
-
 ## Adding another subject
 
 The engine is subject-agnostic; adding a subject never requires touching it. Create `references/domains/<new-id>/` with the seven contract files and fill in `manifest.yml` — see [`CONTRIBUTING.md`](CONTRIBUTING.md) and `skills/dsh-coach/references/engine/domain-contract.md`.
@@ -118,9 +107,9 @@ The engine is subject-agnostic; adding a subject never requires touching it. Cre
 
 ## Documentation
 
-- [`docs/installing.zh.md`](docs/installing.zh.md) — installation details (native DSH / DSH Desktop / each skill root), with verified vs unverified marks
-- [`docs/DESIGN-AUDIT.md`](docs/DESIGN-AUDIT.md) — three rounds of change review, including the author's own proposals that were **rejected** and the defects found by adversarial review
-- [`docs/original-workflow.zh.md`](docs/original-workflow.zh.md) — the author's original workflow document (cited by line number in the audit)
+- [`docs/installing.zh.md`](docs/installing.zh.md) — installation details (native DSH / DSH Desktop / each skill root)
+- [`CHANGELOG.md`](CHANGELOG.md) — version history
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — how to add a domain pack
 
 ## Contributing
 
