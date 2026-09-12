@@ -113,6 +113,23 @@ if (demoState && !demoState.__parseError) {
   else record('ST-W7 提醒（单题即发已验证）', 'FAIL', '未命中 ST-W7');
 }
 
+// ── 3.6 不变量 3 的反绕过子句：强度不足的证据不得支撑"已验证" ───────────────
+// 只断言规则号出现是不够的（level<3 等分支同样报 ST03），因此这里单独构造
+// "已验证 + 引用的证据强度是待验证" 的探针，确认反绕过子句真的生效。
+if (demoState && !demoState.__parseError) {
+  const probe = JSON.parse(JSON.stringify(demoState));
+  probe.evidence.push({ id: 'E92', stage: 0, claim: '某机制', artifact: '问答记录：Q9-9 作答原文', strength: '待验证', note: '' });
+  const target = probe.capability.find((c) => c.dimension === '结构与质量');
+  target.status = '已验证';
+  target.level = 3;
+  target.evidence = ['E92'];
+  const r = new Report();
+  checkState(r, probe);
+  const hit = r.errors.some((x) => x.rule === 'ST03' && /没有一条是/.test(x.msg));
+  if (hit) record('不变量 3 反绕过子句', 'PASS', '引用"待验证"证据却标已验证据此被拦下');
+  else record('不变量 3 反绕过子句', 'FAIL', '未命中"没有一条是已验证"的 ST03');
+}
+
 // ── 4. 分层负例：注入硬令牌必须被发现 ───────────────────────────────────────
 const tempRoot = path.join(SKILL_DIR, '..', '.selftest-tmp');
 try {

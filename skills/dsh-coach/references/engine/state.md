@@ -30,7 +30,7 @@
 | `route` | array | 阶段：`n`、`name`、`deliverable`、`nonGoals[]`、`skills[]`、`prereq[]`、`tasks[]`、`userOnly[]`、`acceptance[]`、`risks[]`、`estimate`、`next` |
 | `current` | object | `stage`、`stageStatus`、`task{title,deliverable,criteria[],limits[],nonGoals[],estimateMin,state}` |
 | `evidence` | array | `id`、`stage`（**`0` = 诊断期证据**）、`claim`、`artifact`、`strength`、`note` |
-| `open` | array | `id`、`issue`、`severity`、`status`（未解决/已解决）、`next` |
+| `open` | array | `id`、`issue`、`severity`、`status`（未解决/已解决）、`next`；**可选** `basis`（依据：文档章节或文件行号）与 `checkStatus`（`已核对`／`推测`，默认 `推测`）——R10 要求的实测依据必须落在这里才可复核 |
 | `routeChanges` | array | `at`、`reason`、`change` |
 | `directAnswers` | array | `at`、`topic`。**记录本身不计入能力证据**；该成果只有在用户能解释、修改、验证之后，才可另行作为证据计入（见 `task-loop.md`） |
 | `authorizations` | array | `scope`、`mode`（read/write）、`grantedAt` |

@@ -29,6 +29,8 @@ const DIMENSIONS = ['基础知识', '实际应用', '问题拆解', '调试与�
 const STATUS = ['已验证', '部分验证', '待验证'];
 const SEVERITIES = ['阻塞', '重要', '建议'];
 const OPEN_STATUS = ['未解决', '已解决'];
+/** open[].checkStatus：R10 实测要求的依据是否已核对（缺省视为"推测"） */
+const CHECK_STATUS = ['已核对', '推测'];
 const STAGE_STATUS = ['未开始', '进行中', '待验收', '已通过', '有条件通过', '未通过'];
 const AUTH_MODES = ['read', 'write'];
 const SECTIONS = ['archetypes', 'diagnosis', 'verification', 'pitfalls', 'example', 'glossary'];
@@ -271,7 +273,9 @@ function checkCapability(r, capability, evidence) {
       // 取舍理由见 docs/ENGINE-REVISION-2.zh.md §7.3：误报的代价是每次正常教学被阻塞。
       // 闭合的绕过路径（第 2 轮审核提出）：
       //   A 改前缀（"诊断问答："）→ 改为按题号正则识别，不看前缀；
-      //   B 混入一条非问答记录 → 只统计 strength=已验证 的证据，混入待验证证据无效；
+      //   B 混入一条非问答记录 → 已收窄为"只统计 strength=已验证 的证据"，故混入"待验证"证据无效；
+      //     **残余**：混入一条 strength=已验证、artifact 不含题号的行为类证据 → untagged>0 → 完全抑制本提醒。
+      //     这是 warn-only 的已知边界，如实记录在 §7.3，不通过加严判据去堵（那会误伤正常表述）。
       //   C 伪造题号（"Q1-1 加难追问（对照 Q2-1）"）→ 题号归一化为 `主-次` 并取首个匹配；
       //   E 裸 `Q` 误报 → 正则要求 `Q<数字>-<数字>`。
       // 残余边界（如实声明）：把 status 降为"部分验证"仍可完全回避本提醒——这正是它**只做提醒**的原因。
@@ -426,6 +430,13 @@ function checkOpen(r, open) {
     if (!isNonEmptyStr(o.issue)) r.error('ST-TYPE', `${w}.issue`, '问题描述必须非空', null);
     if (!SEVERITIES.includes(o.severity)) r.error('ST-TYPE', `${w}.severity`, `严重程度必须是 ${SEVERITIES.join(' / ')}`, null);
     if (!OPEN_STATUS.includes(o.status)) r.error('ST-TYPE', `${w}.status`, `状态必须是 ${OPEN_STATUS.join(' / ')}`, null);
+    // R10 留痕：basis（依据的文档章节/行号）与 checkStatus（已核对/推测）为**可选**字段，
+    // 兼容既有状态文件；出现时校验类型与枚举。
+    if ('basis' in o && !isStr(o.basis)) r.error('ST-TYPE', `${w}.basis`, '必须是字符串（依据：文档章节或文件行号）', null);
+    if ('checkStatus' in o) {
+      if (!CHECK_STATUS.includes(o.checkStatus)) r.error('ST-TYPE', `${w}.checkStatus`, `核对状态必须是 ${CHECK_STATUS.join(' / ')}`, null);
+      else if (o.checkStatus === '推测') r.warn('ST-W8', `${w}.checkStatus`, '依据的核对状态为"推测"', 'R10 规定：推测状态不得据此要求实测——先自行核对文档');
+    }
     if (!isStr(o.next)) r.error('ST-TYPE', `${w}.next`, '必须是字符串', null);
   });
 }
@@ -658,7 +669,11 @@ function renderProgress(state, statePathLabel) {
   L.push('## 待解决项');
   const open = state.open.filter((o) => o.status === '未解决');
   if (open.length === 0) L.push('（无）');
-  else for (const o of open) L.push(`- [${o.severity}] ${o.id}：${o.issue} → ${o.next}`);
+  else for (const o of open) {
+    const trail = [o.basis ? `依据：${o.basis}` : null, o.checkStatus ? `核对状态：${o.checkStatus}` : null]
+      .filter(Boolean).join('｜');
+    L.push(`- [${o.severity}] ${o.id}：${o.issue} → ${o.next}${trail ? `（${trail}）` : ''}`);
+  }
   L.push('');
   L.push('## 教学策略');
   L.push(`- 暂缓：${state.strategy.deferred.join('；') || '—'}`);
