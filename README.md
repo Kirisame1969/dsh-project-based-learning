@@ -98,9 +98,9 @@ What has actually been executed, versus what is only documented:
 
 | Item | Status |
 |---|---|
-| `coach-selftest.mjs` (validator regression, incl. adversarial fixtures) | ✅ 6/6 pass |
+| `coach-selftest.mjs` (validator regression, incl. adversarial fixtures) | ✅ 9/9 pass |
 | `test/entry.smoke.mjs` (bundle entry contract) | ✅ pass |
-| `dsh-plugin-dev check` (community static checker) | ✅ 9 passed / 0 failed (1 warning: five-language README, see below) |
+| `dsh-plugin-dev check` (community static checker) | ✅ 9 passed / 0 failed (2 warnings, both about README conventions — see below) |
 | Skill discovery on DSH Desktop (project skill root, no restart) | ✅ verified |
 | Bundle install via native `dsh plugin add` | ⚠️ not yet executed on a native CLI (structure follows the official publish tutorial) |
 | Unity recipes marked「（未验证）」in the domain pack | ⚠️ require a machine with Unity Editor |

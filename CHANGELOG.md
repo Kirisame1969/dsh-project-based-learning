@@ -45,7 +45,7 @@
 ### 新增
 
 - **教学引擎**（学科无关）：`skills/dsh-coach/SKILL.md` + `references/engine/`（intake、diagnosis、route、task-loop、review-acceptance、adapt、state、permissions、domain-contract）。
-- **状态契约**：`.coach/state.json` 为唯一事实源，`.coach/PROGRESS.md` 为生成视图；含 13 条机械不变量之外的多项补充检查。
+- **状态契约**：`.coach/state.json` 为唯一事实源，`.coach/PROGRESS.md` 为生成视图；含机械不变量与多项补充检查（1.0.0 时为 13 条；**1.1.0 增至 21 条**，见 `references/engine/state.md`）。
 - **校验器**：`coach-validate.mjs`（状态层 + 领域包结构 + 引擎分层检查，零依赖）。
 - **回归自测**：`coach-selftest.mjs`（含反向夹具与分层负例自动化；不启动子进程，可在受限沙箱内运行）。
 - **安装器**：`coach-install.mjs`（复制或目录联接安装到技能根，含递归与覆盖守卫）。

@@ -94,14 +94,14 @@ skills/dsh-coach/
 
 | 项目 | 状态 |
 |---|---|
-| `coach-selftest.mjs`（校验器回归，含对抗性夹具） | ✅ 6/6 通过 |
+| `coach-selftest.mjs`（校验器回归，含对抗性夹具） | ✅ 9/9 通过 |
 | `test/entry.smoke.mjs`（组合包入口契约） | ✅ 通过 |
 | `dsh-plugin-dev check`（社区静态检查器） | ✅ 9 通过 / 0 失败（1 警告：五语 README，见下） |
 | DSH Desktop 上的技能发现（项目技能根，免重启） | ✅ 已实测 |
 | 原生 `dsh plugin add` 的端到端安装 | ⚠️ 尚未在原生 CLI 上执行（结构遵循官方 publish 教程） |
 | 领域包中标注「（未验证）」的 Unity 配方 | ⚠️ 需在装有 Unity Editor 的环境实测 |
 
-> 关于那 1 条警告：检查器期望五种语言的 README（样板作者自身约定）；官方 harness 仓库只有中英双语，本项目同样只提供 `README.md` + `README.zh.md`。我们不做未经审校的机器翻译。
+> 两条警告都是**该样板作者自身的文档约定**，本项目不采纳且已写明理由：① 期望五种语言的 README——官方 harness 仓库也只有中英双语；② 要求各语言 README 的**标题字符串完全相同**——官方包自己的 `README.zh.md` 用的就是翻译标题（如 `## 概述` 对 `## Overview`）。我们不做未经审校的机器翻译，也不为此改写标题。
 
 ## 替换学科特化
 

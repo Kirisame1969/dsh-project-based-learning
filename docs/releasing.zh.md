@@ -1,14 +1,16 @@
 # 发布清单
 
-> **当前状态：仓库已发布** → <https://github.com/Kirisame1969/dsh-project-based-learning>
-> 默认分支 `main`｜43 文件｜GitHub 已识别 MIT｜根提交 `470c526`｜发布时点即触发 CI。
+> **当前状态（第三轮全局复核后核实）**：仓库 <https://github.com/Kirisame1969/dsh-project-based-learning> **存在但已转为 private**——已认证 API 返回 `"private": true`（`visibility: private`），未认证访问因此是 404；远端 `main` 仍停在发布时的 `372f381`（远端 `package.json` = 1.0.0），本地已到 **1.1.0**（提交 `ecf7b17`）。默认分支 `main`｜GitHub 已识别 MIT｜10 个 topics 保留。
+>
+> ⚠️ **发布前必须先决定这件事**：仓库处于私有状态时，① `package.json` 的 `repository`/`homepage`/`bugs` 三个 URL 对匿名访问者是 404（对外陈述与事实不符）；② 社区列表 PR 明确要求公开仓库。**恢复公开**是账号持有人的决定，不由本次修订代做。
+>
 > 本文件保留后续步骤（npm 发布、awesome 列表提交）与**本机 git 不通的修复方案**。
 
 ## 0. 已完成，不要重做
 
 ```bash
 node test/entry.smoke.mjs                                   # 入口契约 + 资源齐全 → PASS
-node skills/dsh-coach/scripts/coach-selftest.mjs            # 校验器回归 → 6/6 PASS
+node skills/dsh-coach/scripts/coach-selftest.mjs            # 校验器回归 → 9/9 PASS
 node skills/dsh-coach/scripts/coach-validate.mjs --state examples/state.demo.json
 dsh-plugin-dev check                                        # 社区静态检查 → ok=true（9 通过 / 0 失败 / 2 警告）
 ```

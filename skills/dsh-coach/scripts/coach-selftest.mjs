@@ -130,6 +130,24 @@ if (demoState && !demoState.__parseError) {
   else record('不变量 3 反绕过子句', 'FAIL', '未命中"没有一条是已验证"的 ST03');
 }
 
+// ── 3.7 ST-W8：实测依据标为"推测"时必须提醒；省略字段时不提醒 ────────────────
+if (demoState && !demoState.__parseError) {
+  const withSpec = JSON.parse(JSON.stringify(demoState));
+  withSpec.open.push({ id: 'O90', issue: '疑为文档与实测不一致', severity: '重要', status: '未解决', next: '要求实测', basis: '官方文档某节', checkStatus: '推测' });
+  const rWith = new Report();
+  checkState(rWith, withSpec);
+  const hit = rWith.warns.some((x) => x.rule === 'ST-W8');
+
+  const withoutSpec = JSON.parse(JSON.stringify(demoState));
+  withoutSpec.open.push({ id: 'O91', issue: '未填留痕字段', severity: '重要', status: '未解决', next: '照常推进' });
+  const rWithout = new Report();
+  checkState(rWithout, withoutSpec);
+  const noWarn = !rWithout.warns.some((x) => x.rule === 'ST-W8');
+
+  if (hit && noWarn) record('ST-W8 推测状态提醒', 'PASS', '标"推测"时提醒；省略留痕字段时不提醒（与 state.md 的如实声明一致）');
+  else record('ST-W8 推测状态提醒', 'FAIL', hit ? '省略字段时被误报' : '标"推测"时未提醒');
+}
+
 // ── 4. 分层负例：注入硬令牌必须被发现 ───────────────────────────────────────
 const tempRoot = path.join(SKILL_DIR, '..', '.selftest-tmp');
 try {

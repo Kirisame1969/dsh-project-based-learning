@@ -346,7 +346,7 @@
 
 ### 8.2 自查证据（可复跑）
 
-实质断言（`coach-selftest.mjs`，**7 项全 PASS**）：反向夹具被拦下（23 条 error，关键规则齐全）／正向夹具状态层／领域包结构／**`ST-W7` 命中 warn 且未升级为 error**／分层负例（副本 3 条 LY01、原目录 0 条）／迷你 YAML 子集解析／渲染函数形状。
+实质断言（`coach-selftest.mjs`，**9 项全 PASS**）：反向夹具被拦下（23 条 error，关键规则齐全）／正向夹具状态层／领域包结构／**`ST-W7` 命中 warn 且未升级为 error**／**不变量 3 反绕过子句**／**`ST-W8` 推测状态提醒（含"省略字段不提醒"）**／分层负例（副本 3 条 LY01、原目录 0 条）／迷你 YAML 子集解析／渲染函数形状。
 
 其余验证：
 
@@ -420,7 +420,7 @@ dsh-plugin-dev check                                   → ok=true，9 通过 / 
 ### 9.3 复测证据
 
 ```
-coach-selftest.mjs                        → PASS 7 / SKIP 0 / FAIL 0（含 ST-W7 与分层负例断言）
+coach-selftest.mjs                        → PASS 9 / SKIP 0 / FAIL 0（含 ST-W7、ST-W8、不变量 3 反绕过、分层负例断言）
 coach-validate.mjs 正向夹具                → 退出码 0
 coach-validate.mjs 反向夹具                → 退出码 1（23 条 error）
 ST-W7 绕过复测（改前缀 + 伪造题号写法）      → 仍命中 warn（按题号正则识别）
