@@ -7,8 +7,8 @@
 //
 // 退出码 0 表示通过，非 0 表示入口契约被破坏。
 import assert from 'node:assert/strict'
-import { existsSync } from 'node:fs'
-import { join } from 'node:path'
+import { existsSync, readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
 import { apply, inject, name } from '../lib/index.js'
 
 assert.equal(name, 'dsh-project-based-learning', '插件名必须是 dsh-project-based-learning')
@@ -38,28 +38,35 @@ const skill = registered[0]
 assert.equal(skill.name, 'dsh-project-based-learning')
 assert.equal(skill.source, 'bundled')
 assert.ok(typeof skill.description === 'string' && skill.description.length > 10, '描述必须非空')
-assert.ok(skill.description.includes('项目制学习教练'), '描述应来自 SKILL.md frontmatter')
-assert.ok(skill.content.includes('# 项目制教学教练（引擎）'), '正文应是 SKILL.md 的指令体')
+assert.ok(skill.description.includes('教学辅导'), '描述应来自 SKILL.md frontmatter')
+assert.ok(skill.content.includes('# 项目制教学教练 2.0'), '正文应是 SKILL.md 的指令体')
 assert.ok(!skill.content.startsWith('---'), '正文不应包含 frontmatter')
 assert.equal(skill.resourceBase.kind, 'directory', '必须以目录型 resourceBase 暴露技能目录')
 assert.ok(skill.resourceBase.path.endsWith(join('skills', 'dsh-project-based-learning')), `resourceBase 应指向技能目录，实际 ${skill.resourceBase.path}`)
 assert.ok(existsSync(join(skill.resourceBase.path, 'SKILL.md')), 'resourceBase 下的 SKILL.md 必须存在')
 
-// 技能正文引用的引擎协议文件必须随包分发，否则加载后是死链
+// 技能正文引用的每个 Markdown 相对链接都必须随包分发，否则加载后是死链。
+// 从 SKILL.md 现场提取，避免引用列表与正文漂移。
+const skillMd = readFileSync(join(skill.resourceBase.path, 'SKILL.md'), 'utf8')
+const links = [...skillMd.matchAll(/\]\(([^)]+)\)/g)].map((m) => m[1])
+assert.ok(links.length > 0, 'SKILL.md 应当引用惰性加载的资源')
+for (const rel of links) {
+  assert.ok(!/^[a-z]+:/i.test(rel), `SKILL.md 不应引用外部链接：${rel}`)
+  assert.ok(existsSync(join(skill.resourceBase.path, rel)), `技能资源缺失：${rel}`)
+}
+
+// 正文以散文方式引用、因而不出现在链接里的随包资源
 for (const rel of [
-  'references/engine/intake.md',
-  'references/engine/diagnosis.md',
-  'references/engine/route.md',
-  'references/engine/task-loop.md',
-  'references/engine/review-acceptance.md',
-  'references/engine/adapt.md',
-  'references/engine/state.md',
-  'references/engine/permissions.md',
-  'references/engine/domain-contract.md',
-  'assets/state.template.json',
-  'scripts/coach-validate.mjs',
+  'assets/lesson-note.md',
+  'scripts/validate-learning-state.mjs',
+  'scripts/migrate-v1-state.mjs',
 ]) {
   assert.ok(existsSync(join(skill.resourceBase.path, rel)), `技能资源缺失：${rel}`)
 }
 
-console.log('entry smoke: PASS（入口契约与技能资源齐全）')
+// 冗余防线：旧版（2.x）的引擎与领域包路径必须已经不再被引用
+for (const gone of ['references/engine', 'references/domains/unity-csharp/manifest.yml']) {
+  assert.ok(!existsSync(join(skill.resourceBase.path, gone)), `旧版资源应已移除：${gone}`)
+}
+
+console.log(`entry smoke: PASS（入口契约、${links.length} 个链接引用与随包资源齐全）`)

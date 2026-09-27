@@ -1,6 +1,6 @@
 # 贡献指南
 
-感谢你考虑为 dsh-project-based-learning 做贡献。本项目的核心设计是**教学法引擎与学科内容分离**，因此最有价值的贡献通常是**新增或改进一个领域包**。
+感谢你考虑为 dsh-project-based-learning 做贡献。本项目的核心设计是**教学法与学科内容分离**，因此最有价值的贡献通常是**新增或改进一份领域导航**。
 
 ## 环境要求
 
@@ -10,10 +10,12 @@
 ## 本地验证（提交前必须全绿）
 
 ```bash
-node test/entry.smoke.mjs                                   # 组合包入口契约 + 技能资源齐全
-node skills/dsh-project-based-learning/scripts/coach-selftest.mjs            # 校验器回归自测（含反向夹具与分层负例）
-node skills/dsh-project-based-learning/scripts/coach-validate.mjs --state examples/state.demo.json
+node test/entry.smoke.mjs                    # 组合包入口契约 + SKILL.md 链接与随包资源齐全
+node skills/dsh-project-based-learning/scripts/validate-learning-state.mjs \
+     --state skills/dsh-project-based-learning/assets/state.template.json
 ```
+
+（等价写法：`npm run smoke` 与 `npm run validate`。）
 
 若你手上有 `dsh-plugin-guide` 提供的工具链，可再跑一次静态检查：
 
@@ -23,56 +25,74 @@ dsh-plugin-dev check --strict
 
 ## 贡献类型
 
-### 1. 新增学科领域包（最欢迎）
+### 1. 新增领域导航（最欢迎）
 
-引擎是学科无关的；学科内容全部住在 `skills/dsh-project-based-learning/references/domains/<domain-id>/`。新增一个学科 = 新增一个目录，**不需要改引擎**。
+教学协议是学科无关的；学科内容全部住在 `skills/dsh-project-based-learning/references/domains/`。新增一个学科 = 新增**一个单文件**，并在 `domains/index.md` 加一行指向它——**不需要改教学协议**。
 
 **步骤**
 
-1. 读契约：`skills/dsh-project-based-learning/references/engine/domain-contract.md`。
-2. 新建 `references/domains/<domain-id>/`，按契约补齐七个文件：
-   `manifest.yml`、`archetypes.md`、`diagnosis-bank.md`、`verification.md`、`pitfalls.md`、`example.md`、`glossary.md`。
-3. `manifest.yml` 必须恰好包含契约规定的 8 个键（不增删），且 `id` 与目录名一致。
-4. 跑校验器确认契约通过：
+1. 读契约：`skills/dsh-project-based-learning/references/domain-guidance.md`。
+2. 新建 `references/domains/<domain-id>.md`。
+3. 在 `references/domains/index.md` 增加一行，把尖括号占位符换成真实值：
 
-   ```bash
-   node skills/dsh-project-based-learning/scripts/coach-validate.mjs --state examples/state.demo.json --domain-dir skills/dsh-project-based-learning/references/domains/<domain-id>
+   ```markdown
+   - <适用场景描述>：[<domain-id>.md](<domain-id>.md)
    ```
+
+4. 跑本地验证命令确认链接与随包资源齐全。
 
 **内容要求（会被人工审）**
 
-- 诊断题必须贴合真实项目，而不是通用考试；每题标注考察维度与最小诊断类别（理解预测 / 问题定位 / 小型实现）。
-- 核对配方必须可复制执行，并标注前置条件、期望输出、失败含义、所需沙箱模式、AI 能否代执行。
-- 无法实测的命令必须在行内标注「（未验证）」，并说明原因——**这是硬性要求**，不要凭记忆编造命令或 API。
-- **讲授要点必须与判分要点一致**：新增或修改某题的「讲授要点」时，必须逐条对照同一题的「合格回答要点」与「典型错误回答」，**不得互相矛盾**。第 2 轮独立审核实测发现过一次此类错误——讲授要点讲的正是判分要点列为"典型错误"的答案；这类错误会经由 R9 把错的机制直接教给零基础学员。
-- 陷阱条目要写出机制，而不只是症状。
+一份导航**应包含**：
 
-### 2. 改引擎
+- 领域覆盖范围和典型作品；
+- 粗略阶段与关键依赖（写成依赖图，不是课程表）；
+- 少数不能轻易跳过的门槛概念；
+- 常见误区、安全风险和版本敏感点；
+- 必要时建议优先查阅的官方资料类型。
 
-引擎文件是 `skills/dsh-project-based-learning/SKILL.md` 与 `references/engine/*.md`。
+一份导航**不得包含**：
 
-**红线**：`SKILL.md`、`references/engine/*.md`、`assets/*.md` 中**不得出现学科专有词条**。校验器的 `LY01` 检查会用硬令牌黑名单拦截（NFKC 归一化 + 整词匹配；`scripts/` 不参与扫描，因为校验器自身含词表）。这条红线是"可替换特化"能成立的唯一保证。
+- 诊断题库、答案或固定测验；
+- 逐课讲稿、固定课时和完整课程树；
+- 预制练习清单、任务卡或验收量表；
+- 为每个概念准备的固定示例代码；
+- 穷举式术语表。
 
-改教学法规则时，请在 PR 描述里说明：**原规则的失败场景是什么、为什么必须改**。本项目对引擎改动采用保守流程——参见 `docs/DESIGN-AUDIT.md` 记录的六项检验（必要性 / 最小性 / 反方论证 / 回归 / 可验证 / 复审），其中多条"看起来更好"的改动被明确驳回。
+保持**单文件、粗粒度**。具体讲解、示例、练习与问题必须由 agent 围绕学习者当前作品**即时生成**，不写回导航。只有长期有效的路线依赖、稳定风险或版本边界才值得维护进导航。
 
-### 3. 改校验器与工具
+无法实测的命令必须在行内标注「（未验证）」并说明原因——**这是硬性要求**，不要凭记忆编造命令或 API。
 
-`skills/dsh-project-based-learning/scripts/` 下三个脚本，同样零依赖：
+### 2. 改教学协议
 
-- 新增不变量时，**必须同时**：在 `references/engine/state.md` 声明该不变量、在 `coach-selftest.mjs` 增加断言、并在反向夹具 `examples/state.selftest-invalid.json` 里覆盖它。
-- 禁止引入子进程与管道（受限沙箱下会失败）；自测必须在进程内调用校验函数。
+教学协议是 `skills/dsh-project-based-learning/SKILL.md` 与 `references/*.md`。
+
+**红线**：`SKILL.md` 与 `references/*.md`（`domains/` 除外）中**不得出现学科专有词条**。这条红线是「可替换特化」能成立的唯一保证。
+
+> ⚠️ **3.0 起该红线不再有机械门禁。** 2.x 的 `coach-validate.mjs` 有一个 `LY01` 检查（硬令牌黑名单 + NFKC 归一化 + 整词匹配）会自动拦截；该脚本已在 3.0 移除，现在**只能靠人工与评审把关**。改协议时请显式自查这一点。
+
+改教学法规则时，请在 PR 描述里说明：**原规则的失败场景是什么、为什么必须改**。请特别留意 `SKILL.md` 的「不可违背的教学原则」一节——这些条款对应 `PORTING-BRIEF` 级的教学不变量，不要在没有充分理由的情况下弱化或删除。
+
+### 3. 改状态 schema 与脚本
+
+`skills/dsh-project-based-learning/scripts/` 下两个脚本，同样零依赖：
+
+- **改状态结构时**，必须同步三处：`assets/state.template.json` 模板、`validate-learning-state.mjs` 的校验规则、`references/planning-and-state.md` 的字段说明；若涉及不兼容变化，还要升 `schemaVersion` 并更新 `migrate-v1-state.mjs`。
+- **五档概念状态**（`尚未接触` / `已讲授待实践` / `带练中` / `可在熟悉任务中独立使用` / `已迁移到新任务`）中，后三档在语义上要求实践证据；校验器**必须**保留这条机械门禁——它防止"讲授即掌握"被写进状态。
+- 禁止引入子进程与管道（受限沙箱下会失败）。
 - 只读代码路径不得写文件；写文件路径必须可清理。
 
 ## 提交 PR
 
-1. 分支命名：`feat/domain-<id>`、`fix/engine-<topic>`、`chore/<topic>`。
-2. 提交信息：祈使句，说明**为什么**；领域包 PR 请附上题目/配方的来源或实测记录。
+1. 分支命名：`feat/domain-<id>`、`fix/protocol-<topic>`、`chore/<topic>`。
+2. 提交信息：祈使句，说明**为什么**；领域导航 PR 请附上内容来源或实测记录。
 3. 确认清单：
-   - [ ] 上述三条本地验证命令全绿
-   - [ ] 未把学科词条写进引擎文件
-   - [ ] 新领域包补了 `example.md`（填好的基线 + 阶段 + 审阅 + 验收结论）
+   - [ ] 上述两条本地验证命令全绿
+   - [ ] 未把学科词条写进教学协议文件（`domains/` 除外）
+   - [ ] 新领域导航已在 `domains/index.md` 注册，且不含题库／固定课时／预制练习／术语表
    - [ ] 无法实测的命令已标「（未验证）」
-   - [ ] `CHANGELOG.md` 在"未发布"处补了条目（如有）
+   - [ ] 若改了状态结构，模板、校验器、字段文档三处已同步
+   - [ ] `CHANGELOG.md` 在「未发布」处补了条目（如有）
 4. 若你要把插件收录进社区列表，那是**另一个仓库**的 PR：[awesome-dsh-plugin/awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin)（另有 [dshworks/awesome-dsh-plugins](https://github.com/dshworks/awesome-dsh-plugins)）。请先读该仓库的 `contributing.md` 再提。
 
 ## 许可

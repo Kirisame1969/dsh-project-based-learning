@@ -3,9 +3,54 @@
 本文件记录 `dsh-project-based-learning` 的对外变更。版本号含义：
 
 - **插件包版本**（`package.json#version`）：npm 包与组合包层的版本。
-- **引擎版本**（`SKILL.md` 与 `references/engine/` 的教学法逻辑）：`1.0.0` 起，交互协议变化才递增。
-- **状态 schema 版本**（`state.json#schemaVersion`）：`1.0`，字段语义变化才递增。
-- **领域包版本**（`references/domains/<id>/manifest.yml#version`）：各学科独立演进，与引擎版本解耦。
+- **状态 schema 版本**（`state.json#schemaVersion`）：`2.0`，字段语义变化才递增。
+- **教学协议**：随包分发于 `skills/dsh-project-based-learning/`，不单独计版本。3.0 起不再有 2.x 的 `engineVersion` 字段。
+- **领域导航**：`references/domains/<id>.md` 单文件，不单独计版本（2.x 的 `manifest.yml#version` 已取消）。
+
+## [3.0.0] - 2026-09-27
+
+**教学协议整体替换为先教学后实践的 2.0 结构。** 状态路径、状态 schema、领域导航结构与随包脚本全部不兼容，故按破坏性变更升主版本。
+
+### 变更（破坏性）
+
+- **教学协议整体替换**：`SKILL.md` 与 `references/` 换成 2.0 版本。核心循环由「诊断 → 阶段路线 → 任务循环 → 阶段验收」改为「**定位 → 教学 → 示范 → 实践 → 观察 → 反馈 → 邻近变化 → 调整 → 记录**」：把明确讲授作为正式环节，让初学者先获得足以行动的理解，再尽快进入真实实践。
+- **状态路径由 `.coach/state.json` 改为 `.learning/state.json`**；`schemaVersion` 由 `1.0` 升为 `2.0`。旧路径不再被读写。
+- **概念状态改为五档描述性状态**：`尚未接触` / `已讲授待实践` / `带练中` / `可在熟悉任务中独立使用` / `已迁移到新任务`。移除 `capability[].level` 数字等级、`status` 与 `impact` 维度打分；不再有数字评分或固定维度分级。
+- **引擎文件由 `references/engine/`（9 个）改为平铺的 `references/`（5 个协议文件 + `domain-guidance.md`）**：`teaching-loop.md`、`planning-and-state.md`、`review-and-adapt.md`、`permissions.md`、`domain-guidance.md`。原 `intake` / `diagnosis` / `route` / `task-loop` / `review-acceptance` / `adapt` / `state` / `domain-contract` 全部退役。
+- **领域包改为单文件导航**：`references/domains/<id>/`（7 文件 + `manifest.yml`）改为 `references/domains/<id>.md`，并新增 `references/domains/index.md` 作为选择入口。导航只保留「覆盖范围、粗略路线、关键门槛概念、常见误区与风险、教学取向、版本核对」，**不得**再含题库、固定课时、预制练习清单或验收量表。
+- **`references/domains/unity-csharp/` 整包移除**（archetypes、diagnosis-bank、example、glossary、pitfalls、verification、manifest），由 `references/domains/unity-csharp.md` 取代。
+- **随包脚本替换**：`coach-validate.mjs` / `coach-selftest.mjs` / `coach-install.mjs` 移除，改为 `validate-learning-state.mjs`（2.0 状态校验）与 `migrate-v1-state.mjs`（从 2.x 状态一次性迁移）。
+- **`package.json#bin` 变更**：`coach-validate` 重新指向 `validate-learning-state.mjs`；新增 `coach-migrate`；移除 `coach-selftest` 与 `coach-install`。
+- **`assets/` 由 4 个改为 2 个**：保留并更新 `state.template.json`（2.0 结构），新增 `lesson-note.md`；`review-report.md`、`stage-acceptance.md`、`task-card.md` 移除。
+- **移除 `examples/` 与 `docs/`**，并从 `package.json#files` 中移除对应条目。
+- **移除指令词表**：`开始诊断` / `制定路线` / `本次任务：…` / `给提示，级别 N` / `审阅成果：…` / `验收阶段` / `复盘` / `调整节奏` / `直接答案` / `查看学习档案` / `切换或替换学科：<id>` 不再存在。改由技能按请求自动选择五条教学车道（快速教学 / 单次带练 / 持续课程 / 成果审阅或排错 / 里程碑回顾），用户直接用自然语言说明要学什么即可。
+
+### 新增
+
+- **五条教学车道**：按请求选择最轻的一条；只有持续课程默认建档。
+- **五档描述性概念状态**及其中三档（`带练中` / `可在熟悉任务中独立使用` / `已迁移到新任务`）**必须有实践证据**的机械门禁：讲授或示例本身不算证据。
+- **`references/domain-guidance.md`**：领域导航的「应包含 / 不得包含」契约，使学科解耦由契约约束而非逐条检查。
+- **`references/domains/unity-shader.md`**：新增 Unity Shader 领域导航（依赖图、门槛概念、透明渲染与过度绘制风险、版本核对）。
+- **`references/domains/unity-csharp.md`**：以单文件粗粒度导航重写 Unity C# 方向。
+- **`migrate-v1-state.mjs`**：`.coach/state.json` → `.learning/state.json` 一次性迁移，保留目标、完成判据、环境、非目标、当前任务与路线文字并压缩为 `now / next / later`；**不迁移数字能力等级**，也不把旧「已验证」自动映射为任何概念状态。
+- **`assets/lesson-note.md`**：可选的单课记录模板。
+- CI 新增「随包状态模板必须通过随包校验器」步骤；`test/entry.smoke.mjs` 改为从 `SKILL.md` **现场提取** Markdown 相对链接并逐个断言存在，避免引用列表与正文漂移。
+
+### 移除（明确记录）
+
+- **诊断题库**（原 16 题 × 7 维度）与**分级提示（1–5 级）**：题库只用于定位与分级，不再作为教学内容存在。
+- **阶段验收三档结论**（通过／有条件通过／未通过）与 `PROGRESS.md` 生成视图（`coach-validate --render`）。
+- **`coach-install.mjs` 与「只装技能文件」安装路径**：README 中 `npx -p dsh-project-based-learning coach-install` 的用法不再可用；需要独立技能副本时请自行复制 `skills/dsh-project-based-learning/`。
+- **`coach-selftest.mjs` 回归自测**（含反向夹具与分层负例自动化）。
+- **引擎分层机械检查**（「学科专有词不得出现在引擎文件中」）：2.0 改由 `domain-guidance.md` 的契约约束，**不再是机械门禁**。
+- `references/engine/domain-contract.md` 契约与 `coach-validate.mjs --domain-dir` 领域包结构校验。
+- 历史文档：`docs/DESIGN-AUDIT.md`、`docs/ENGINE-REVISION-2.zh.md`、`docs/installing.zh.md`、`docs/original-workflow.zh.md`、`docs/releasing.zh.md`、`docs/review-round1-{A-edu,B-eng,C-bounded}.zh.md`、`docs/zero-knowledge-path.zh.md`。
+
+### 说明
+
+- **技能注册名与 npm 包名均保持不变**，仍为 `dsh-project-based-learning`；`cordis.patch.yml` 无需改动。已有的安装命令与 `skill("dsh-project-based-learning")` 调用不受影响。
+- **迁移脚本是有损的**：2.x 的 `strategy.assumptions`（可能含学员下发的格式约定）、`open`（未解决事项）、`authorizations`（授权范围）与 `routeChanges` 不会被搬进 2.0 结构，需人工补进 `preferences`、`decisions` 与 `context.exclusions`。
+- `references/domains/unity-shader.md` 与 `unity-csharp.md` 均为**粗粒度导航**，不含预制示例代码；具体讲解、示例、练习与问题须围绕学习者当前作品即时生成。
 
 ## [2.0.1] - 2026-09-13
 
