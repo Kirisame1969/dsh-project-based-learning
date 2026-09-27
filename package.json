@@ -10,8 +10,8 @@
     "./package.json": "./package.json"
   },
   "bin": {
-    "coach-validate": "./skills/dsh-project-based-learning/scripts/validate-learning-state.mjs",
-    "coach-migrate": "./skills/dsh-project-based-learning/scripts/migrate-v1-state.mjs"
+    "coach-validate": "skills/dsh-project-based-learning/scripts/validate-learning-state.mjs",
+    "coach-migrate": "skills/dsh-project-based-learning/scripts/migrate-v1-state.mjs"
   },
   "files": [
     "lib",
