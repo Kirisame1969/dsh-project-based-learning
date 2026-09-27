@@ -26,7 +26,7 @@ This project constrains "AI tutoring" into an **executable teaching protocol**: 
 - **Teach first, then practice**: for unfamiliar knowledge, explain the minimal necessary mechanism first instead of asking the learner to guess; theory covers only what the current step needs, then returns immediately to one real operation.
 - **Explain in place**: new concepts, new built-in functions, and non-obvious syntax are explained **where they first appear**; do not translate an entire file line by line, and do not unfold a whole subject at once for the sake of "completeness".
 - **Non-graded evidence**: only five descriptive concept states record the difference between "explained" and "already demonstrated through practice"; no numeric ability scores and no fixed-dimension grades are used.
-- **Subject decoupling**: the pedagogy lives in the teaching engine, and subject knowledge lives in **domain navigations that can be replaced wholesale**; changing subject does not require changing the engine.
+- **Subject decoupling**: the teaching protocol lives in `SKILL.md` and `references/*.md`, and subject knowledge lives in **domain navigations that can be replaced wholesale**; changing subject does not require changing the teaching protocol.
 
 > **Naming**: the repository name, the npm package name, and the registered skill name are identical, all being `dsh-project-based-learning` (the model invokes it through `skill("dsh-project-based-learning")`).
 
@@ -46,7 +46,7 @@ This project constrains "AI tutoring" into an **executable teaching protocol**: 
 - **Not a question bank or a drill tool**: a domain navigation gives only rough dependencies and threshold concepts; it contains no diagnostic question bank, no fixed lesson hours, and no standard answers.
 - **Not a ghost-writing tool**: a review request does not automatically authorize modification; a teaching request does not automatically widen project write permission.
 - **Not an official DeepSeek plugin**: this project is a third-party implementation.
-- **Not limited to any subject**: two navigations ship with the package, Unity Shader and Unity C#; neither of them belongs to the engine.
+- **Not limited to any subject**: two navigations ship with the package, Unity Shader and Unity C#; both are optional add-ons you can delete or swap without affecting the teaching protocol.
 
 ## 🚀 Quick start
 
@@ -55,16 +55,23 @@ This project constrains "AI tutoring" into an **executable teaching protocol**: 
 Copy the whole block below and paste it into any DSH session you are using — it installs the plugin itself and checks each item:
 
 ```text
-Please install the DSH plugin dsh-project-based-learning (project-based teaching coach: skill + bundle). Steps:
+Please install the DSH plugin dsh-project-based-learning (project-based teaching coach). Steps:
 
 1. Run: dsh plugin --profile web add dsh-project-based-learning
-   (change the profile name to the one you actually use; the desktop default is web; if this fails or the installed version is below 3.0.0, use instead:
-    dsh plugin --profile web add github:Kirisame1969/dsh-project-based-learning)
+   Change the profile name to the one you actually use; the desktop default is web.
+   If you get "dsh is not recognized", dsh is not on PATH. On the desktop build the entry point is:
+   %LOCALAPPDATA%\Programs\DSH Desktop\resources\app.asar.unpacked\node_modules\@deepseek-ai\dsh\lib\bin.js
+   Call it with node and the full path (note app.asar.unpacked; the older resources\app path no longer exists).
+   If the installed version is below 3.0.0, use instead:
+   dsh plugin --profile web add github:Kirisame1969/dsh-project-based-learning
 2. Run: dsh --profile web --dump-config and confirm that a dsh-project-based-learning layer appears in the output
-3. Confirm the skill is registered: dsh-project-based-learning should appear in the skill catalog
-4. Report back to me: the installed version, whether that layer exists, and whether the skill is available
+3. Restart the Harness, then call skill("dsh-project-based-learning") and confirm the first line of the body is "# 项目制教学教练 2.0"
+   Two common misreads — do not treat either as a failure:
+   - this plugin copies no files into any skills directory; the skill is registered at runtime, so "it is not in my skills directory" is expected;
+   - the skill body is read once when the plugin loads, so the version will not change until the Harness restarts.
+4. Report back to me: the installed version, whether that layer exists, and what the first line of the skill body is
 
-If you hit an error, first read the "Installation details" section of the README at https://github.com/Kirisame1969/dsh-project-based-learning.
+If you hit an error, first read the "Installation details" section of the README at https://github.com/Kirisame1969/dsh-project-based-learning and docs/releasing.zh.md.
 ```
 
 ### Option 2: type one command yourself

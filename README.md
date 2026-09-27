@@ -26,7 +26,7 @@
 - **先教学，后实践**：陌生知识先讲最小必要机制，不要求学员猜测；理论只覆盖当前步骤所需内容，然后立刻回到一次真实操作。
 - **就地解释**：新概念、新内置函数和非显然语法在**首次使用处**说明，不逐行翻译整个文件，也不为「完整」一次展开整门学科。
 - **非评分式证据**：只用五档描述性概念状态记录「讲过」与「已经通过实践展示」的区别，不使用数字能力分或固定维度等级。
-- **学科解耦**：教学法在教学引擎中，学科知识在**可整体替换的领域导航**中；换学科不需要改引擎。
+- **学科解耦**：教学协议住在 `SKILL.md` 与 `references/*.md`，学科知识住在**可整体替换的领域导航**里；换学科不需要改教学协议。
 
 > **命名**：仓库名、npm 包名、技能注册名三者一致，均为 `dsh-project-based-learning`（模型侧通过 `skill("dsh-project-based-learning")` 调用）。
 
@@ -46,7 +46,7 @@
 - **不是题库或刷题工具**：领域导航只给粗略依赖与门槛概念，不含诊断题库、固定课时或标准答案。
 - **不是代写工具**：审阅请求不自动授权修改；教学请求也不自动扩大项目写权限。
 - **不是官方 DeepSeek 插件**：本项目为第三方实现。
-- **不限定学科**：随包提供 Unity Shader 与 Unity C# 两份导航，它们都不属于引擎。
+- **不限定学科**：随包提供 Unity Shader 与 Unity C# 两份导航，它们都是可删可换的附加材料，删掉不影响教学协议。
 
 ## 🚀 快速开始
 
@@ -55,16 +55,24 @@
 复制下面整段，粘给你正在用的任意一个 DSH 会话——它会自己安装并逐项核对：
 
 ```text
-请帮我安装 DSH 插件 dsh-project-based-learning（项目制教学教练：技能 + 组合包）。步骤：
+请帮我安装 DSH 插件 dsh-project-based-learning（项目制教学教练）。步骤：
 
 1. 执行：dsh plugin --profile web add dsh-project-based-learning
-   （profile 名按你实际使用的改，桌面端默认是 web；若失败或装到的版本低于 3.0.0，改用：
-    dsh plugin --profile web add github:Kirisame1969/dsh-project-based-learning）
+   profile 名按你实际使用的改，桌面端默认是 web。
+   若报「无法将 dsh 项识别为 cmdlet / command not found」，说明 dsh 不在 PATH 上；
+   桌面端的入口是：
+   %LOCALAPPDATA%\Programs\DSH Desktop\resources\app.asar.unpacked\node_modules\@deepseek-ai\dsh\lib\bin.js
+   用 node 加全路径调用即可（注意是 app.asar.unpacked，旧的 resources\app 路径已不存在）。
+   若装到的版本低于 3.0.0，改用：
+   dsh plugin --profile web add github:Kirisame1969/dsh-project-based-learning
 2. 执行：dsh --profile web --dump-config，确认输出里出现 dsh-project-based-learning 层
-3. 确认技能已注册：技能目录里应出现 dsh-project-based-learning
-4. 向我报告：装到的版本、该层是否存在、技能是否可用
+3. 重启 Harness，再调用 skill("dsh-project-based-learning")，确认正文首行是「# 项目制教学教练 2.0」
+   两个常见误判，不要据此判定失败：
+   - 本插件不往任何技能目录复制文件，技能是运行时注册的，「技能目录里没出现」是正常的；
+   - 技能正文是插件加载时一次性读入的，装完不重启 Harness 就不会换版。
+4. 向我报告：装到的版本、该层是否存在、技能正文首行是哪一行
 
-遇到报错先读 https://github.com/Kirisame1969/dsh-project-based-learning 的 README「安装细节」一节。
+遇到报错先读 https://github.com/Kirisame1969/dsh-project-based-learning 的 README「安装细节」一节与 docs/releasing.zh.md。
 ```
 
 ### 方式二：自己敲一条命令
