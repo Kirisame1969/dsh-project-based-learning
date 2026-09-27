@@ -231,6 +231,7 @@ The migration trade-offs are **deliberate**:
 
 - [`CHANGELOG.md`](CHANGELOG.md) — version changes
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — how to add a domain navigation
+- [`docs/releasing.zh.md`](docs/releasing.zh.md) — release checklist and locally verified channel findings (Simplified Chinese)
 - `references/domain-guidance.md` — the domain navigation contract
 
 ## 🤝 Contributing

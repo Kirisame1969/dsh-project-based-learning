@@ -231,6 +231,7 @@ node skills/dsh-project-based-learning/scripts/migrate-v1-state.mjs \
 
 - [`CHANGELOG.md`](CHANGELOG.md) —— 版本变更
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) —— 新增领域导航的方法
+- [`docs/releasing.zh.md`](docs/releasing.zh.md) —— 发布清单与本机通道实测结论
 - `references/domain-guidance.md` —— 领域导航契约
 
 ## 🤝 贡献
