@@ -1,7 +1,9 @@
 # 发布清单
 
 > **当前状态（2026-09-27 核实）**：仓库 <https://github.com/Kirisame1969/dsh-project-based-learning> 已公开，默认分支 `main`。
-> 远端 `main` = `32db71e`（**3.0.0**，教学协议替换）。npm 上已发布 `1.1.0` / `2.0.0` / `2.0.1`，`latest` = `2.0.1`。
+> 远端 `main` = `adb6105`。npm 已发布 `3.0.0`（`latest`），其 `dist.gitHead` = `adb6105`，与远端提交一致。
+>
+> **3.0.0 发布实测**：`PUT` 返回 **202 Accepted**（异步处理），约 60 秒后版本号与 `dist-tags` 才在 registry 可见（`time.modified` 同步更新）。**发布后不要立刻用 `npm view` 判断失败**——刚发完查会得到 E404 和旧的 `dist-tags`。
 >
 > 本文件记录推送、npm 发布、本机安装同步与社区列表投稿的步骤，以及本机通道的**实测**结论。
 
@@ -71,6 +73,15 @@ npm publish --access public
 npm view dsh-project-based-learning version      # 应显示新版本
 npm view dsh-project-based-learning versions
 ```
+
+### 2FA：发布需要一次性口令，非交互环境发不出去
+
+本机实测（2026-09-27）：`npm publish` 先 `PUT` 得到 **401**，随后 npm 尝试走 Web 授权——打印 `https://www.npmjs.com/auth/cli/<id>` 并轮询 `https://registry.npmjs.org/-/v1/done?authId=<id>`。
+
+- **交互式终端**：授权完成后 npm 自己重试 `PUT` 并成功（实测 `PUT 202` + `exit 0` + `info ok`）。所以在本机终端直接跑下面的命令即可，浏览器点一下确认就行。
+- **非交互环境**（脚本、后台任务、无 TTY）：npm 打印授权 URL 后**立即以 `EOTP` 退出**，不轮询也不等待，该 authId 随之作废。放到后台跑也一样。
+- 结论：**自动化发布必须用 Automation 类型 token**（该类型绕过 2FA），否则只能在有 TTY 的终端手工发。
+- npm 会把 authId 在终端输出与 `_logs` 调试日志里**都脱敏成 `***`**，事后无法从日志里捞回授权 URL，别指望这条路。
 
 ### 凭据注意
 
