@@ -1,7 +1,9 @@
 # 发布清单
 
 > **当前状态（2026-09-27 核实）**：仓库 <https://github.com/Kirisame1969/dsh-project-based-learning> 已公开，默认分支 `main`。
-> 远端 `main` = `adb6105`。npm 已发布 `3.0.0`（`latest`），其 `dist.gitHead` = `adb6105`，与远端提交一致。
+> npm 已发布 `3.0.0`（`latest`），其 `dist.gitHead` = `adb6105` —— 该提交即 3.0.0 的代码提交，远端 `main` 已包含它（其后只追加过文档提交）。
+>
+> 本行**刻意不写远端 `main` 的最新提交号**：本文件自身每改一次 `main` 就会前进一次，写死必然过时。要核对当前值用 `gh api repos/Kirisame1969/dsh-project-based-learning/git/ref/heads/main`。
 >
 > **3.0.0 发布实测**：`PUT` 返回 **202 Accepted**（异步处理），约 60 秒后版本号与 `dist-tags` 才在 registry 可见（`time.modified` 同步更新）。**发布后不要立刻用 `npm view` 判断失败**——刚发完查会得到 E404 和旧的 `dist-tags`。
 >
